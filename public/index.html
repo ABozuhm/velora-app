@@ -1,29 +1,776 @@
-<!DOCTYPE html>
-<html>
+<!doctype html>
+<html lang="en">
 <head>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Velora</title>
-  <link rel="stylesheet" href="style.css">
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Velora App</title>
+<meta name="theme-color" content="#8d55ff" />
+<meta name="description" content="Velora social AI app" />
+<meta name="google-adsense-account" content="ca-pub-4127234740771954" />
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4127234740771954" crossorigin="anonymous"></script>
+
+<style>
+  :root {
+    --bg-1: #120714;
+    --bg-2: #261033;
+    --accent: #8d55ff;
+    --accent-2: #ff8fab;
+    --accent-3: #5ee7ff;
+    --panel: rgba(255,255,255,0.94);
+    --ink: #20122e;
+    --muted: #7d6a8e;
+    --line: rgba(141,85,255,0.16);
+    --shadow: 0 24px 80px rgba(10,2,20,0.34);
+    --sidebar: rgba(16,8,24,0.92);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    min-height: 100vh;
+    font-family: "Segoe UI", Arial, sans-serif;
+    background:
+      radial-gradient(circle at top left, rgba(255,143,171,0.18), transparent 25%),
+      radial-gradient(circle at bottom right, rgba(141,85,255,0.24), transparent 28%),
+      linear-gradient(135deg, var(--bg-1), var(--bg-2) 55%, #09040f);
+    color: white;
+  }
+
+  .app {
+    min-height: 100vh;
+    display: grid;
+    grid-template-columns: 290px minmax(0, 1fr);
+  }
+
+  .sidebar {
+    background: var(--sidebar);
+    border-right: 1px solid rgba(255,255,255,0.08);
+    padding: 20px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    backdrop-filter: blur(18px);
+  }
+
+  .brand-card {
+    border-radius: 24px;
+    padding: 18px;
+    background: linear-gradient(135deg, rgba(141,85,255,0.28), rgba(255,143,171,0.18));
+    border: 1px solid rgba(255,255,255,0.08);
+  }
+
+  .brand-card .mini {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: rgba(255,255,255,0.72);
+  }
+
+  .brand-card h1 {
+    margin-top: 8px;
+    font-size: 30px;
+    line-height: 0.95;
+    font-weight: 900;
+  }
+
+  .brand-card p {
+    margin-top: 8px;
+    color: rgba(255,255,255,0.78);
+    font-size: 13px;
+    line-height: 1.5;
+  }
+
+  .side-nav {
+    display: grid;
+    gap: 10px;
+  }
+
+  .side-btn {
+    width: 100%;
+    border: 1px solid rgba(255,255,255,0.07);
+    background: rgba(255,255,255,0.04);
+    color: white;
+    border-radius: 18px;
+    padding: 14px;
+    cursor: pointer;
+    text-align: left;
+    font-weight: 800;
+  }
+
+  .side-btn span {
+    display: block;
+    font-size: 12px;
+    color: rgba(255,255,255,0.65);
+    font-weight: 500;
+    margin-top: 4px;
+  }
+
+  .side-btn.active {
+    background: linear-gradient(135deg, rgba(141,85,255,0.34), rgba(255,143,171,0.24));
+    box-shadow: 0 0 0 2px rgba(141,85,255,0.18);
+  }
+
+  .side-note {
+    border-radius: 20px;
+    padding: 14px;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.08);
+  }
+
+  .side-note strong {
+    display: block;
+    margin-bottom: 6px;
+    font-size: 14px;
+  }
+
+  .side-note p {
+    color: rgba(255,255,255,0.72);
+    font-size: 12px;
+    line-height: 1.5;
+  }
+
+  .main {
+    padding: 22px;
+  }
+
+  .tab-panel {
+    display: none;
+  }
+
+  .tab-panel.active {
+    display: block;
+  }
+
+  .surface {
+    background: var(--panel);
+    color: var(--ink);
+    border-radius: 30px;
+    overflow: hidden;
+    box-shadow: var(--shadow);
+  }
+
+  .surface-hero {
+    padding: 24px 24px 18px;
+    color: white;
+    background:
+      radial-gradient(circle at 84% 16%, rgba(255,255,255,0.28), transparent 22%),
+      linear-gradient(135deg, #35124d, #8d55ff 55%, #ff8fab);
+  }
+
+  .surface-hero h2 {
+    font-size: clamp(28px, 5vw, 40px);
+    font-weight: 900;
+    line-height: 0.95;
+  }
+
+  .surface-hero p {
+    margin-top: 10px;
+    max-width: 48ch;
+    color: rgba(255,255,255,0.88);
+    line-height: 1.5;
+  }
+
+  .surface-body {
+    padding: 22px;
+  }
+
+  .velora-layout {
+    display: grid;
+    grid-template-columns: 1.2fr 380px;
+    gap: 18px;
+  }
+
+  .chat-panel {
+    display: grid;
+    gap: 14px;
+  }
+
+  .status-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    color: var(--muted);
+    font-size: 14px;
+  }
+
+  .status-copy {
+    display: grid;
+    gap: 4px;
+  }
+
+  .mode-line {
+    font-size: 12px;
+    color: #7d4cc6;
+    font-weight: 800;
+  }
+
+  .pulse {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--accent);
+    box-shadow: 0 0 0 0 rgba(141,85,255,0.55);
+    animation: pulse 1.8s infinite;
+  }
+
+  #chat {
+    min-height: 320px;
+    max-height: 460px;
+    overflow-y: auto;
+    border-radius: 24px;
+    border: 1px solid var(--line);
+    padding: 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    background:
+      linear-gradient(180deg, rgba(141,85,255,0.05), rgba(255,143,171,0.03)),
+      #fff;
+  }
+
+  .bubble {
+    max-width: 84%;
+    padding: 14px 16px;
+    border-radius: 18px;
+    line-height: 1.45;
+    font-size: 15px;
+  }
+
+  .user {
+    align-self: flex-end;
+    background: linear-gradient(135deg, var(--accent), #6b34db);
+    color: white;
+    border-bottom-right-radius: 6px;
+  }
+
+  .ai {
+    align-self: flex-start;
+    background: #f6efff;
+    color: var(--ink);
+    border-bottom-left-radius: 6px;
+  }
+
+  .controls {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+
+  .control-btn {
+    border: none;
+    border-radius: 18px;
+    padding: 16px;
+    font-size: 16px;
+    font-weight: 900;
+    cursor: pointer;
+  }
+
+  #mic {
+    color: white;
+    background: linear-gradient(135deg, #8d55ff, #ff8fab);
+  }
+
+  #stop {
+    color: var(--ink);
+    background: #f2eaff;
+  }
+
+  .right-stack {
+    display: grid;
+    gap: 14px;
+  }
+
+  .card {
+    border: 1px solid var(--line);
+    border-radius: 22px;
+    padding: 16px;
+    background: white;
+  }
+
+  .card strong {
+    display: block;
+    margin-bottom: 6px;
+    font-size: 15px;
+  }
+
+  .card span,
+  .card p {
+    color: var(--muted);
+    line-height: 1.55;
+    font-size: 13px;
+  }
+
+  .setting-grid {
+    display: grid;
+    gap: 12px;
+  }
+
+  .field {
+    display: grid;
+    gap: 8px;
+  }
+
+  .field label {
+    font-size: 13px;
+    font-weight: 800;
+    color: var(--ink);
+  }
+
+  .field input,
+  .field select,
+  .field textarea {
+    width: 100%;
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    padding: 12px 14px;
+    font: inherit;
+    background: #fff;
+    color: var(--ink);
+  }
+
+  .save-btn, .ghost-btn, .pill-btn {
+    border: none;
+    border-radius: 999px;
+    padding: 12px 16px;
+    font-weight: 900;
+    cursor: pointer;
+  }
+
+  .save-btn, .pill-btn {
+    background: linear-gradient(135deg, #8d55ff, #ff8fab);
+    color: white;
+  }
+
+  .ghost-btn {
+    background: #f3ebff;
+    color: var(--ink);
+  }
+
+  .voice-grid {
+    display: grid;
+    gap: 10px;
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .voice-card {
+    border: 1px solid var(--line);
+    border-radius: 18px;
+    padding: 14px;
+    cursor: pointer;
+    background: #fff;
+  }
+
+  .voice-card.selected {
+    border-color: #8d55ff;
+    background: #f7f0ff;
+    box-shadow: 0 0 0 3px rgba(141,85,255,0.12);
+  }
+
+  .voice-card strong {
+    display: block;
+    margin-bottom: 6px;
+    font-size: 14px;
+  }
+
+  .voice-card span {
+    color: var(--muted);
+    font-size: 12px;
+    line-height: 1.45;
+  }
+
+  .meet-layout,
+  .discover-layout,
+  .contest-layout,
+  .profile-layout {
+    display: grid;
+    gap: 18px;
+  }
+
+  .meet-layout {
+    grid-template-columns: 1fr 320px;
+  }
+
+  .video-stage {
+    border-radius: 24px;
+    border: 1px solid var(--line);
+    background: #fff;
+    padding: 16px;
+  }
+
+  .video-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+
+  .video-box {
+    min-height: 260px;
+    background: #130a1f;
+    border-radius: 20px;
+    overflow: hidden;
+    position: relative;
+  }
+
+  .video-box video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    background: #130a1f;
+  }
+
+  .video-tag {
+    position: absolute;
+    bottom: 12px;
+    left: 12px;
+    padding: 8px 10px;
+    border-radius: 999px;
+    background: rgba(0,0,0,0.42);
+    color: #fff;
+    font-size: 12px;
+    font-weight: 800;
+  }
+
+  .action-row {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-top: 14px;
+  }
+
+  .discover-grid,
+  .contest-grid {
+    display: grid;
+    gap: 14px;
+  }
+
+  .discover-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .contest-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .discover-card,
+  .contest-card {
+    border: 1px solid var(--line);
+    border-radius: 22px;
+    background: white;
+    overflow: hidden;
+  }
+
+  .discover-photo {
+    min-height: 280px;
+    background:
+      linear-gradient(180deg, rgba(0,0,0,0.08), rgba(0,0,0,0.28)),
+      linear-gradient(135deg, #35124d, #8d55ff 58%, #ff8fab);
+    position: relative;
+  }
+
+  .discover-badge {
+    position: absolute;
+    top: 14px;
+    left: 14px;
+    padding: 8px 12px;
+    border-radius: 999px;
+    background: rgba(255,255,255,0.18);
+    color: white;
+    font-size: 12px;
+    font-weight: 800;
+  }
+
+  .discover-copy,
+  .contest-copy {
+    padding: 16px;
+  }
+
+  .discover-copy h4,
+  .contest-copy h4 {
+    font-size: 20px;
+    font-weight: 900;
+  }
+
+  .discover-copy p,
+  .contest-copy p {
+    margin-top: 8px;
+    color: var(--muted);
+    line-height: 1.55;
+  }
+
+  .profile-layout {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  @keyframes pulse {
+    0% { box-shadow: 0 0 0 0 rgba(141,85,255,0.55); }
+    70% { box-shadow: 0 0 0 14px rgba(141,85,255,0); }
+    100% { box-shadow: 0 0 0 0 rgba(141,85,255,0); }
+  }
+
+  @media (max-width: 1100px) {
+    .app {
+      grid-template-columns: 1fr;
+    }
+
+    .velora-layout,
+    .meet-layout,
+    .profile-layout {
+      grid-template-columns: 1fr;
+    }
+
+    .contest-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  @media (max-width: 720px) {
+    .main {
+      padding: 0;
+    }
+
+    .surface {
+      border-radius: 0;
+    }
+
+    .surface-hero,
+    .surface-body {
+      padding-left: 18px;
+      padding-right: 18px;
+    }
+
+    .controls,
+    .voice-grid,
+    .video-grid,
+    .discover-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
 </head>
 <body>
+<div class="app">
+  <aside class="sidebar">
+    <div class="brand-card">
+      <div class="mini">Velora social ai</div>
+      <h1>Velora</h1>
+      <p>Bigo-style social shell with your assistant, meet mode, discovery, contests, and profile controls in one app.</p>
+    </div>
 
-<h1>Velora Voice + Meet</h1>
+    <nav class="side-nav">
+      <button class="side-btn active" data-mode="velora" type="button">🧠 Velora<span>Assistant tab with full AI controls</span></button>
+      <button class="side-btn" data-mode="meet" type="button">📹 Meet<span>Mutual-permission live video</span></button>
+      <button class="side-btn" data-mode="discover" type="button">🔥 Discover<span>Swipe-style user cards and photos</span></button>
+      <button class="side-btn" data-mode="contests" type="button">🏆 Contests<span>Run photo drops and community events</span></button>
+      <button class="side-btn" data-mode="profile" type="button">👤 Profile<span>Account, monetization, setup</span></button>
+    </nav>
 
-<button id="startVoice">🎤 Voice Mode</button>
-<button id="startVideo">📹 Meet Mode</button>
+    <div class="side-note">
+      <strong>What changes now</strong>
+      <p>This phase makes Velora its own real tab inside the app and adds the settings structure you asked for.</p>
+    </div>
+  </aside>
 
-<p>Your ID: <span id="myId"></span></p>
+  <main class="main">
+    <!-- VELORA TAB -->
+    <section id="mode-velora" class="tab-panel active">
+      <div class="surface">
+        <div class="surface-hero">
+          <h2>Velora</h2>
+          <p>Your AI tab inside the app. This is where the user talks to Velora, changes voices and languages, and sets the AI identity.</p>
+        </div>
+        <div class="surface-body">
+          <div class="velora-layout">
+            <div class="chat-panel">
+              <div class="status-bar">
+                <div class="status-copy">
+                  <span id="status">Tap the mic and speak.</span>
+                  <span id="modeLabel" class="mode-line">Set your Velora mode first.</span>
+                </div>
+                <span class="pulse"></span>
+              </div>
 
-<div id="videoSection" style="display:none;">
-  <video id="localVideo" autoplay muted></video>
-  <video id="remoteVideo" autoplay></video>
+              <div id="chat"></div>
 
-  <button id="requestUser">Request User</button>
-  <button id="acceptCall">Accept</button>
+              <div class="controls">
+                <button id="mic" class="control-btn" type="button">Start Talking</button>
+                <button id="stop" class="control-btn" type="button" disabled>Stop</button>
+              </div>
+            </div>
+
+            <div class="right-stack">
+              <div class="card">
+                <strong id="accountSummaryTitle">Sign in to personalize Velora.</strong>
+                <span id="accountSummaryMeta">Each user gets their own AI setup, voices, and preferences.</span>
+              </div>
+
+              <div class="card">
+                <strong id="profileSummaryTitle">Velora profile not set yet.</strong>
+                <span id="profileSummaryMeta">Choose user language, AI language, AI gender, user voice, AI voice, and personality.</span>
+              </div>
+
+              <div class="card setting-grid">
+                <div class="field">
+                  <label for="displayName">User name</label>
+                  <input id="displayName" type="text" placeholder="What should Velora call you?" />
+                </div>
+
+                <div class="field">
+                  <label for="userLanguageSelect">User language</label>
+                  <select id="userLanguageSelect"></select>
+                </div>
+
+                <div class="field">
+                  <label for="aiLanguageSelect">AI language</label>
+                  <select id="aiLanguageSelect"></select>
+                </div>
+
+                <div class="field">
+                  <label for="assistantGenderSelect">AI gender</label>
+                  <select id="assistantGenderSelect">
+                    <option value="woman">Woman</option>
+                    <option value="man">Man</option>
+                    <option value="neutral">Neutral</option>
+                  </select>
+                </div>
+
+                <div class="field">
+                  <label for="assistantName">AI name</label>
+                  <input id="assistantName" type="text" placeholder="Velora or custom name" />
+                </div>
+
+                <div class="field">
+                  <label for="personalityStyle">AI personality</label>
+                  <select id="personalityStyle">
+                    <option value="balanced">Balanced</option>
+                    <option value="playful">Playful</option>
+                    <option value="luxe">Luxe</option>
+                    <option value="savage">Savage</option>
+                    <option value="guide">Guide Mode</option>
+                  </select>
+                </div>
+
+                <div class="field">
+                  <label>User voice</label>
+                  <div id="userVoiceGrid" class="voice-grid"></div>
+                </div>
+
+                <div class="field">
+                  <label>AI voice</label>
+                  <div id="aiVoiceGrid" class="voice-grid"></div>
+                </div>
+
+                <div class="field">
+                  <label for="personalityNotes">Custom AI notes</label>
+                  <textarea id="personalityNotes" rows="4" placeholder="How should Velora act?"></textarea>
+                </div>
+
+                <div class="action-row">
+                  <button id="previewVoice" class="ghost-btn" type="button">Preview AI Voice</button>
+                  <button id="saveProfile" class="save-btn" type="button">Save Velora Setup</button>
+                  <button id="accountBtn" class="ghost-btn" type="button">Account</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- MEET TAB -->
+    <section id="mode-meet" class="tab-panel">
+      <div class="surface">
+        <div class="surface-hero">
+          <h2>Meet</h2>
+          <p>Bigo-style live social space with mutual permission before video connects.</p>
+        </div>
+        <div class="surface-body">
+          <div class="meet-layout">
+            <div class="video-stage">
+              <div class="video-grid">
+                <div class="video-box">
+                  <video id="localVideo" autoplay muted playsinline></video>
+                  <span class="video-tag">You</span>
+                </div>
+                <div class="video-box">
+                  <video id="remoteVideo" autoplay playsinline></video>
+                  <span class="video-tag">Connected user</span>
+                </div>
+              </div>
+
+              <div class="action-row">
+                <button id="startVideoMode" class="pill-btn" type="button">Start Camera</button>
+                <button id="requestUser" class="ghost-btn" type="button">Request User</button>
+                <button id="acceptCall" class="ghost-btn" type="button">Accept Request</button>
+              </div>
+            </div>
+
+            <div class="right-stack">
+              <div class="card">
+                <strong>How Meet works</strong>
+                <p>Request first. Accept second. Connect third. That keeps it intentional and safer.</p>
+              </div>
+              <div class="card">
+                <strong>Future upgrades</strong>
+                <p>Live gifting, ranking, creator rooms, and better moderation can plug into this mode later.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- DISCOVER TAB -->
+    <section id="mode-discover" class="tab-panel">
+      <div class="surface">
+        <div class="surface-hero">
+          <h2>Discover</h2>
+          <p>Swipe-style browsing for profiles, photos, and contest entries.</p>
+        </div>
+        <div class="surface-body">
+          <div id="discoverGrid" class="discover-grid"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CONTESTS TAB -->
+    <section id="mode-contests" class="tab-panel">
+      <div class="surface">
+        <div class="surface-hero">
+          <h2>Contests</h2>
+          <p>Run challenges, photo contests, and featured community drops.</p>
+        </div>
+        <div class="surface-body">
+          <div id="contestGrid" class="contest-grid"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- PROFILE TAB -->
+    <section id="mode-profile" class="tab-panel">
+      <div class="surface">
+        <div class="surface-hero">
+          <h2>Profile</h2>
+          <p>Account, monetization, boosts, and future premium features.</p>
+        </div>
+        <div class="surface-body">
+          <div class="profile-layout">
+            <div class="card">
+              <strong>Account</strong>
+              <p>User login, identity, saved Velora setup, contest participation, and future trust verification.</p>
+            </div>
+            <div class="card">
+              <strong>Monetization</strong>
+              <p>Google Ads stays active. Later this can expand into boosts, gifts, subscriptions, and creator perks.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
 </div>
 
 <script src="/socket.io/socket.io.js"></script>
 <script src="app.js"></script>
-
 </body>
 </html>

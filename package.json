@@ -1,13 +1,13 @@
 {
   "name": "velora-app",
   "version": "1.0.0",
-  "description": "Velora Voice + Video Meet App",
+  "description": "Velora Voice + Bigo-style social shell",
   "main": "server.js",
   "scripts": {
     "start": "node server.js"
   },
   "dependencies": {
-    "dotenv": "^16.6.1",
+    "dotenv": "^16.4.5",
     "express": "^4.18.2",
     "socket.io": "^4.7.5"
   }
