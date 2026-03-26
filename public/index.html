@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Velora</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<h1>Velora Voice + Meet</h1>
+
+<button id="startVoice">🎤 Voice Mode</button>
+<button id="startVideo">📹 Meet Mode</button>
+
+<p>Your ID: <span id="myId"></span></p>
+
+<div id="videoSection" style="display:none;">
+  <video id="localVideo" autoplay muted></video>
+  <video id="remoteVideo" autoplay></video>
+
+  <button id="requestUser">Request User</button>
+  <button id="acceptCall">Accept</button>
+</div>
+
+<script src="/socket.io/socket.io.js"></script>
+<script src="app.js"></script>
+
+</body>
+</html>
