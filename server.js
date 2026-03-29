@@ -1,40 +1,68 @@
 require("dotenv").config();
-
-const path = require("path");
-const http = require("http");
-const crypto = require("crypto");
 const express = require("express");
-const { Server } = require("socket.io");
 
 const app = express();
-const server = http.createServer(app);
-const io = new Server(server, {
-  cors: { origin: "*", methods: ["GET", "POST"] }
+
+// REQUIRED FOR RENDER
+const PORT = process.env.PORT || 3000;
+
+// MIDDLEWARE
+app.use(express.json());
+app.use(express.static("public"));
+
+// ===== AI ROUTE =====
+app.post("/api/ai", async (req, res) => {
+  const { message, personality, language } = req.body;
+
+  let systemPrompt = "";
+
+  if (personality.includes("Savage")) {
+    systemPrompt = "You are bold, savage, confident, and slightly aggressive but entertaining.";
+  } else if (personality.includes("Flirty")) {
+    systemPrompt = "You are playful, flirty, and charming.";
+  } else if (personality.includes("Professional")) {
+    systemPrompt = "You are professional, smart, and business-focused.";
+  } else if (personality.includes("Chill")) {
+    systemPrompt = "You are relaxed, friendly, and easygoing.";
+  } else if (personality.includes("Motivational")) {
+    systemPrompt = "You are inspiring, energetic, and uplifting.";
+  }
+
+  let langInstruction = `Respond in ${language}`;
+
+  try {
+    const response = await fetch("https://api.openai.com/v1/chat/completions", {
+      method: "POST",
+      headers: {
+        "Authorization": `Bearer ${process.env.OPENAI_API_KEY}`,
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        model: "gpt-4o-mini",
+        messages: [
+          { role: "system", content: systemPrompt },
+          { role: "system", content: langInstruction },
+          { role: "user", content: message }
+        ]
+      })
+    });
+
+    const data = await response.json();
+
+    res.json({
+      reply: data.choices?.[0]?.message?.content || "No response"
+    });
+
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "AI failed" });
+  }
 });
 
-const PORT = process.env.PORT || 10000;
-
-app.use(express.json({ limit: "2mb" }));
-app.use(express.urlencoded({ extended: true }));
-app.use(express.static(path.join(__dirname, "public")));
-
-/* -----------------------------
-   In-memory starter storage
-   Replace with a real DB later
-------------------------------*/
-const usersByEmail = new Map();
-const sessionsByToken = new Map();
-const usersById = new Map();
-
-const discoverCards = [
-  {
-    id: crypto.randomUUID(),
-    handle: "@contestqueen",
-    tag: "Featured Entry",
-    bio: "Contest-ready profile card area with glam visuals, creator energy, and swipe appeal."
-  },
-  {
-    id: crypto.randomUUID(),
+// ===== START SERVER =====
+app.listen(PORT, () => {
+  console.log("Server running on port " + PORT);
+});    id: crypto.randomUUID(),
     handle: "@nightvibe",
     tag: "Hot Right Now",
     bio: "Late-night social energy, smooth visuals, and a strong creator profile made for discovery."
