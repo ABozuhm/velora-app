@@ -1,40 +1,261 @@
-https://hcr.ny.gov/system/files/documents/2023/11/fact-sheet-42-11-2023.pdf    color: var(--muted);
-    font-size: 14px;
-  }
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Velora App</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
 
-  .status-copy {
-    display: grid;
-    gap: 4px;
-  }
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #0f172a;
+      color: white;
+    }
 
-  .mode-line {
-    font-size: 12px;
-    color: #7d4cc6;
-    font-weight: 800;
-  }
+    header {
+      background: #111827;
+      padding: 18px 20px;
+      text-align: center;
+      font-size: 28px;
+      font-weight: bold;
+      border-bottom: 1px solid #334155;
+    }
 
-  .pulse {
-    width: 10px;
-    height: 10px;
-    border-radius: 50%;
-    background: var(--accent);
-    box-shadow: 0 0 0 0 rgba(141,85,255,0.55);
-    animation: pulse 1.8s infinite;
-  }
+    .tabs {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 10px;
+      padding: 16px;
+      background: #1e293b;
+      border-bottom: 1px solid #334155;
+    }
 
-  #chat {
-    min-height: 320px;
-    max-height: 460px;
-    overflow-y: auto;
-    border-radius: 24px;
-    border: 1px solid var(--line);
-    padding: 14px;
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-    background:
-      linear-gradient(180deg, rgba(141,85,255,0.05), rgba(255,143,171,0.03)),
-      #fff;
+    .tab-btn {
+      background: #334155;
+      color: white;
+      border: none;
+      padding: 12px 18px;
+      border-radius: 10px;
+      cursor: pointer;
+      font-size: 15px;
+    }
+
+    .tab-btn:hover {
+      background: #475569;
+    }
+
+    .tab-btn.active {
+      background: #2563eb;
+    }
+
+    main {
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 24px;
+    }
+
+    .tab-content {
+      display: none;
+      background: #1e293b;
+      border-radius: 16px;
+      padding: 24px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
+      margin-top: 20px;
+    }
+
+    .tab-content.active {
+      display: block;
+    }
+
+    h2 {
+      margin-top: 0;
+    }
+
+    button.main-btn {
+      background: #2563eb;
+      color: white;
+      border: none;
+      padding: 12px 18px;
+      border-radius: 10px;
+      cursor: pointer;
+      font-size: 15px;
+      margin-top: 12px;
+    }
+
+    button.main-btn:hover {
+      background: #1d4ed8;
+    }
+
+    input, select {
+      width: 100%;
+      max-width: 400px;
+      padding: 12px;
+      margin: 10px 0;
+      border-radius: 10px;
+      border: none;
+      font-size: 15px;
+    }
+
+    .output-box {
+      margin-top: 16px;
+      padding: 14px;
+      background: #0f172a;
+      border-radius: 12px;
+      min-height: 50px;
+      border: 1px solid #334155;
+    }
+
+    ul {
+      padding-left: 20px;
+    }
+
+    .row {
+      margin-bottom: 12px;
+    }
+  </style>
+</head>
+<body>
+  <header>Velora</header>
+
+  <div class="tabs">
+    <button class="tab-btn active" onclick="openTab('home', this)">Home</button>
+    <button class="tab-btn" onclick="openTab('voice', this)">Voice</button>
+    <button class="tab-btn" onclick="openTab('favorites', this)">Favorites</button>
+    <button class="tab-btn" onclick="openTab('account', this)">Account</button>
+    <button class="tab-btn" onclick="openTab('settings', this)">Settings</button>
+  </div>
+
+  <main>
+    <section id="home" class="tab-content active">
+      <h2>Home</h2>
+      <p>Welcome to Velora. Use the tabs above to move through the app.</p>
+      <div class="output-box">Home tab is working.</div>
+    </section>
+
+    <section id="voice" class="tab-content">
+      <h2>Voice Assistant</h2>
+      <p>Tap the button and speak.</p>
+      <button class="main-btn" onclick="startListening()">🎤 Start Talking</button>
+      <div id="voiceOutput" class="output-box">Waiting for voice input...</div>
+    </section>
+
+    <section id="favorites" class="tab-content">
+      <h2>Favorites</h2>
+      <p>Add something to your favorites list.</p>
+
+      <div class="row">
+        <input type="text" id="favoriteInput" placeholder="Type a favorite item" />
+      </div>
+
+      <button class="main-btn" onclick="addFavorite()">Add Favorite</button>
+
+      <div class="output-box">
+        <ul id="favoritesList"></ul>
+      </div>
+    </section>
+
+    <section id="account" class="tab-content">
+      <h2>Account</h2>
+      <input type="text" id="username" placeholder="Enter username" />
+      <input type="password" id="password" placeholder="Enter password" />
+      <br />
+      <button class="main-btn" onclick="fakeLogin()">Log In</button>
+      <div id="accountOutput" class="output-box">Not logged in.</div>
+    </section>
+
+    <section id="settings" class="tab-content">
+      <h2>Settings</h2>
+      <p>Choose a mode.</p>
+      <select id="modeSelect" onchange="changeMode()">
+        <option value="Standard">Standard</option>
+        <option value="Friendly">Friendly</option>
+        <option value="Savage">Savage</option>
+      </select>
+      <div id="settingsOutput" class="output-box">Current mode: Standard</div>
+    </section>
+  </main>
+
+  <script>
+    function openTab(tabId, clickedButton) {
+      const tabs = document.querySelectorAll(".tab-content");
+      const buttons = document.querySelectorAll(".tab-btn");
+
+      tabs.forEach(tab => {
+        tab.classList.remove("active");
+      });
+
+      buttons.forEach(button => {
+        button.classList.remove("active");
+      });
+
+      document.getElementById(tabId).classList.add("active");
+      clickedButton.classList.add("active");
+    }
+
+    function startListening() {
+      const output = document.getElementById("voiceOutput");
+
+      if (!("webkitSpeechRecognition" in window) && !("SpeechRecognition" in window)) {
+        output.textContent = "Speech recognition is not supported in this browser.";
+        return;
+      }
+
+      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+      const recognition = new SpeechRecognition();
+
+      recognition.lang = "en-US";
+      recognition.start();
+
+      output.textContent = "Listening...";
+
+      recognition.onresult = function(event) {
+        const transcript = event.results[0][0].transcript;
+        output.textContent = "You said: " + transcript;
+      };
+
+      recognition.onerror = function() {
+        output.textContent = "Microphone error. Please try again.";
+      };
+    }
+
+    function addFavorite() {
+      const input = document.getElementById("favoriteInput");
+      const list = document.getElementById("favoritesList");
+
+      if (input.value.trim() === "") return;
+
+      const li = document.createElement("li");
+      li.textContent = input.value;
+      list.appendChild(li);
+
+      input.value = "";
+    }
+
+    function fakeLogin() {
+      const username = document.getElementById("username").value.trim();
+      const password = document.getElementById("password").value.trim();
+      const output = document.getElementById("accountOutput");
+
+      if (!username || !password) {
+        output.textContent = "Enter username and password.";
+        return;
+      }
+
+      output.textContent = "Logged in as " + username;
+    }
+
+    function changeMode() {
+      const mode = document.getElementById("modeSelect").value;
+      document.getElementById("settingsOutput").textContent = "Current mode: " + mode;
+    }
+  </script>
+</body>
+</html>      #fff;
   }
 
   .bubble {
