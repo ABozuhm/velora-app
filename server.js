@@ -1,40 +1,36 @@
-require("dotenv").config();
 const express = require("express");
+const path = require("path");
+const http = require("http");
+const { Server } = require("socket.io");
+require("dotenv").config();
 
 const app = express();
+const server = http.createServer(app);
+const io = new Server(server);
 
-// REQUIRED FOR RENDER
+// Serve static files from public folder
+app.use(express.static(path.join(__dirname, "public")));
+
+// Basic route (fallback)
+app.get("/", (req, res) => {
+  res.sendFile(path.join(__dirname, "public", "index.html"));
+});
+
+// Socket.io connection (for video/chat later)
+io.on("connection", (socket) => {
+  console.log("User connected:", socket.id);
+
+  socket.on("disconnect", () => {
+    console.log("User disconnected:", socket.id);
+  });
+});
+
+// 🔥 IMPORTANT: Use Render's port
 const PORT = process.env.PORT || 3000;
 
-// MIDDLEWARE
-app.use(express.json());
-app.use(express.static("public"));
-
-// ===== AI ROUTE =====
-app.post("/api/ai", async (req, res) => {
-  const { message, personality, language } = req.body;
-
-  let systemPrompt = "";
-
-  if (personality.includes("Savage")) {
-    systemPrompt = "You are bold, savage, confident, and slightly aggressive but entertaining.";
-  } else if (personality.includes("Flirty")) {
-    systemPrompt = "You are playful, flirty, and charming.";
-  } else if (personality.includes("Professional")) {
-    systemPrompt = "You are professional, smart, and business-focused.";
-  } else if (personality.includes("Chill")) {
-    systemPrompt = "You are relaxed, friendly, and easygoing.";
-  } else if (personality.includes("Motivational")) {
-    systemPrompt = "You are inspiring, energetic, and uplifting.";
-  }
-
-  let langInstruction = `Respond in ${language}`;
-
-  try {
-    const response = await fetch("https://api.openai.com/v1/chat/completions", {
-      method: "POST",
-      headers: {
-        "Authorization": `Bearer ${process.env.OPENAI_API_KEY}`,
+server.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
+});        "Authorization": `Bearer ${process.env.OPENAI_API_KEY}`,
         "Content-Type": "application/json"
       },
       body: JSON.stringify({
