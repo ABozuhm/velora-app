@@ -1,40 +1,153 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Velora</title>
+<script>
 
-<style>
-body { margin:0; font-family:Arial; background:#efe8fb; }
+/* =========================
+   TAB SYSTEM (WORKING)
+========================= */
+function openTab(id){
+  // hide all tabs
+  document.querySelectorAll(".tab-content").forEach(t=>{
+    t.classList.remove("active");
+  });
 
-/* TABS */
-.tabbar { display:flex; gap:10px; padding:15px; }
-.tab-btn {
-  padding:10px 14px;
-  border-radius:20px;
-  border:none;
-  cursor:pointer;
-  background:#eee;
+  // show selected tab
+  let activeTab = document.getElementById(id);
+  if(activeTab){
+    activeTab.classList.add("active");
+  }
+
+  // update button styles
+  document.querySelectorAll(".tab-btn").forEach(b=>{
+    b.classList.remove("active");
+  });
 }
-.tab-btn.active { background:#8d55ff; color:white; }
 
-/* CONTENT */
-.tab-content { display:none; padding:20px; }
-.tab-content.active { display:block; }
 
-/* LAYOUT */
-.layout { display:grid; grid-template-columns: 1fr 300px; gap:20px; }
+/* =========================
+   CHAT SYSTEM (AI BOO BASIC)
+========================= */
+function send(){
+  let inputEl = document.getElementById("input");
+  let box = document.getElementById("chatBox");
 
-/* CHAT */
-.chat { border:1px solid #ddd; padding:15px; border-radius:20px; background:white; }
-.bubble { padding:10px; margin:5px 0; border-radius:10px; }
-.ai { background:#eee; }
-.user { background:#8d55ff; color:white; text-align:right; }
+  if(!inputEl || !box) return;
 
-/* AI BOO PAGE */
-.ai-boo { text-align:center; padding-top:60px; }
+  let text = inputEl.value.trim();
+  if(text === "") return;
 
+  // user message
+  box.innerHTML += `<div class="bubble user">${text}</div>`;
+
+  // AI response
+  setTimeout(()=>{
+    box.innerHTML += `<div class="bubble ai">Velora: Hey boo 💋 I'm here.</div>`;
+    box.scrollTop = box.scrollHeight;
+  }, 300);
+
+  inputEl.value = "";
+}
+
+
+/* =========================
+   AI BOO INTRO ANIMATION
+========================= */
+
+// when AI tab opens, restart animation
+function startAIBoo(){
+  let speech = document.getElementById("speech");
+  let builder = document.getElementById("builder");
+
+  if(!speech || !builder) return;
+
+  // reset
+  speech.style.display = "none";
+  builder.style.display = "none";
+
+  // show speech after walk
+  setTimeout(()=>{
+    speech.style.display = "block";
+  }, 4000);
+
+  // show builder after speech
+  setTimeout(()=>{
+    builder.style.display = "block";
+  }, 7000);
+}
+
+
+/* =========================
+   AUTO TRIGGER WHEN TAB OPENS
+========================= */
+
+// override openTab to trigger AI Boo animation
+const originalOpenTab = openTab;
+
+openTab = function(id){
+  originalOpenTab(id);
+
+  if(id === "ai"){
+    startAIBoo();
+  }
+};
+
+
+/* =========================
+   SAFE LOAD
+========================= */
+window.onload = function(){
+  console.log("Velora UI Loaded ✅");
+};
+
+</script>/* =========================
+   AI BOO INTRO ANIMATION
+========================= */
+
+// when AI tab opens, restart animation
+function startAIBoo(){
+  let speech = document.getElementById("speech");
+  let builder = document.getElementById("builder");
+
+  if(!speech || !builder) return;
+
+  // reset
+  speech.style.display = "none";
+  builder.style.display = "none";
+
+  // show speech after walk
+  setTimeout(()=>{
+    speech.style.display = "block";
+  }, 4000);
+
+  // show builder after speech
+  setTimeout(()=>{
+    builder.style.display = "block";
+  }, 7000);
+}
+
+
+/* =========================
+   AUTO TRIGGER WHEN TAB OPENS
+========================= */
+
+// override openTab to trigger AI Boo animation
+const originalOpenTab = openTab;
+
+openTab = function(id){
+  originalOpenTab(id);
+
+  if(id === "ai"){
+    startAIBoo();
+  }
+};
+
+
+/* =========================
+   SAFE LOAD
+========================= */
+window.onload = function(){
+  console.log("Velora UI Loaded ✅");
+};
+
+</script>
 .model {
   width:80px;
   height:200px;
