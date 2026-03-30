@@ -12,8 +12,3 @@
     "socket.io": "^4.7.5"
   }
 }
-Ctrl + D
-git add package.json
-git commit -m "fixed merge conflict"
-git push -u origin main
-git status
