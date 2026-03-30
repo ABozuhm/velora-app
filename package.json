@@ -1,15 +1,19 @@
 {
   "name": "velora-app",
   "version": "1.0.0",
-  "description": "Velora Voice + Bigo-style social shell",
+  "description": "Velora Voice + Video Meet App",
   "main": "server.js",
   "scripts": {
     "start": "node server.js"
   },
   "dependencies": {
-    "dotenv": "^16.6.1",
+    "dotenv": "^16.4.5",
     "express": "^4.18.2",
-    "openai": "^6.33.0",
     "socket.io": "^4.7.5"
   }
 }
+Ctrl + D
+git add package.json
+git commit -m "fixed merge conflict"
+git push -u origin main
+git status
