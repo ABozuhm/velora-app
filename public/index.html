@@ -1,879 +1,173 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Velora</title>
-  <style>
-    :root {
-      --bg: #0f0a17;
-      --panel: #1a1227;
-      --panel-2: #241834;
-      --card: #fff;
-      --text: #f8f5ff;
-      --muted: #c8bddc;
-      --line: rgba(255,255,255,0.12);
-      --pink: #ff69b4;
-      --purple: #8d55ff;
-      --purple-2: #b47cff;
-      --accent: linear-gradient(135deg, #8d55ff, #ff69b4);
-      --shadow: 0 16px 50px rgba(0,0,0,.35);
-      --radius: 22px;
-    }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Velora</title>
 
-    * { box-sizing: border-box; }
-    body {
-      margin: 0;
-      font-family: Arial, Helvetica, sans-serif;
-      background:
-        radial-gradient(circle at top right, rgba(180,124,255,.25), transparent 26%),
-        radial-gradient(circle at top left, rgba(255,105,180,.15), transparent 25%),
-        var(--bg);
-      color: var(--text);
-    }
+<style>
+body { margin:0; font-family:Arial; background:#efe8fb; }
 
-    .app-shell {
-      max-width: 1280px;
-      margin: 0 auto;
-      padding: 18px;
-    }
+/* TABS */
+.tabbar { display:flex; gap:10px; padding:15px; }
+.tab-btn {
+  padding:10px 14px;
+  border-radius:20px;
+  border:none;
+  cursor:pointer;
+  background:#eee;
+}
+.tab-btn.active { background:#8d55ff; color:white; }
 
-    .topbar {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 16px;
-      padding: 18px 20px;
-      border: 1px solid var(--line);
-      border-radius: 28px;
-      background: rgba(26,18,39,.78);
-      backdrop-filter: blur(10px);
-      box-shadow: var(--shadow);
-      position: sticky;
-      top: 12px;
-      z-index: 20;
-    }
+/* CONTENT */
+.tab-content { display:none; padding:20px; }
+.tab-content.active { display:block; }
 
-    .brand-wrap h1 {
-      margin: 0;
-      font-size: clamp(26px, 4vw, 40px);
-      line-height: 1;
-      letter-spacing: 1px;
-      font-weight: 900;
-      background: linear-gradient(135deg, #fff, #ffb9de 38%, #c9a7ff 78%);
-      -webkit-background-clip: text;
-      background-clip: text;
-      color: transparent;
-    }
+/* LAYOUT */
+.layout { display:grid; grid-template-columns: 1fr 300px; gap:20px; }
 
-    .brand-wrap p {
-      margin: 7px 0 0;
-      color: var(--muted);
-      font-size: 13px;
-    }
+/* CHAT */
+.chat { border:1px solid #ddd; padding:15px; border-radius:20px; background:white; }
+.bubble { padding:10px; margin:5px 0; border-radius:10px; }
+.ai { background:#eee; }
+.user { background:#8d55ff; color:white; text-align:right; }
 
-    .nav-tabs {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-      justify-content: flex-end;
-    }
+/* AI BOO PAGE */
+.ai-boo { text-align:center; padding-top:60px; }
 
-    .tab-btn {
-      border: 1px solid rgba(255,255,255,.12);
-      background: rgba(255,255,255,.06);
-      color: var(--text);
-      padding: 12px 16px;
-      border-radius: 999px;
-      font-weight: 700;
-      cursor: pointer;
-      transition: .2s ease;
-    }
+.model {
+  width:80px;
+  height:200px;
+  background:linear-gradient(#8d55ff,#ff8fab);
+  margin:auto;
+  animation: walk 6s forwards;
+}
 
-    .tab-btn:hover,
-    .tab-btn.active {
-      background: var(--accent);
-      border-color: transparent;
-      transform: translateY(-1px);
-    }
+@keyframes walk {
+  0% { transform:translateX(-200px); }
+  100% { transform:translateX(0); }
+}
 
-    .hero {
-      display: grid;
-      grid-template-columns: 1.2fr .8fr;
-      gap: 18px;
-      margin-top: 18px;
-    }
+.speech { margin-top:20px; display:none; }
 
-    .hero-card,
-    .panel,
-    .swipe-card,
-    .contest-card,
-    .profile-card,
-    .meet-card,
-    .chat-card,
-    .mini-card {
-      border: 1px solid var(--line);
-      border-radius: var(--radius);
-      background: rgba(26,18,39,.84);
-      box-shadow: var(--shadow);
-    }
+.builder { display:none; margin-top:30px; }
 
-    .hero-card {
-      padding: 28px;
-      min-height: 230px;
-      background:
-        radial-gradient(circle at top right, rgba(255,105,180,.12), transparent 28%),
-        radial-gradient(circle at left center, rgba(141,85,255,.22), transparent 35%),
-        rgba(26,18,39,.9);
-    }
+/* SIDEBAR */
+.sidebar { background:white; padding:15px; border-radius:20px; }
 
-    .hero-card h2 {
-      margin: 0 0 12px;
-      font-size: clamp(28px, 4vw, 50px);
-      line-height: .98;
-    }
-
-    .hero-card p {
-      color: var(--muted);
-      font-size: 16px;
-      line-height: 1.6;
-      max-width: 650px;
-    }
-
-    .hero-actions {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 12px;
-      margin-top: 20px;
-    }
-
-    .main-btn,
-    .ghost-btn,
-    .chip,
-    .action-btn {
-      border: none;
-      border-radius: 999px;
-      padding: 13px 18px;
-      font-weight: 800;
-      cursor: pointer;
-    }
-
-    .main-btn, .action-btn { background: var(--accent); color: #fff; }
-    .ghost-btn, .chip { background: rgba(255,255,255,.08); color: #fff; border: 1px solid rgba(255,255,255,.1); }
-
-    .stats-box {
-      padding: 24px;
-      display: grid;
-      gap: 14px;
-      align-content: center;
-    }
-
-    .stat {
-      padding: 14px 16px;
-      border-radius: 18px;
-      background: rgba(255,255,255,.05);
-      border: 1px solid rgba(255,255,255,.08);
-    }
-
-    .stat strong { display: block; font-size: 24px; }
-    .stat span { color: var(--muted); font-size: 13px; }
-
-    .tab-content { display: none; margin-top: 20px; }
-    .tab-content.active { display: block; }
-
-    .section-grid { display: grid; gap: 18px; }
-    .two-col { grid-template-columns: 1.15fr .85fr; }
-    .three-col { grid-template-columns: repeat(3, 1fr); }
-
-    .panel { padding: 20px; }
-    .panel h3, .panel h4 { margin-top: 0; }
-    .panel p { color: var(--muted); line-height: 1.55; }
-
-    .chat-card {
-      display: grid;
-      grid-template-rows: auto 1fr auto;
-      min-height: 560px;
-      overflow: hidden;
-    }
-
-    .chat-head {
-      padding: 18px 20px;
-      border-bottom: 1px solid var(--line);
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 12px;
-    }
-
-    .chat-head .name { font-size: 22px; font-weight: 900; }
-    .status-pill {
-      padding: 8px 12px;
-      border-radius: 999px;
-      font-size: 12px;
-      font-weight: 800;
-      background: rgba(255,255,255,.08);
-      color: #fff;
-    }
-
-    .chat-box {
-      padding: 18px;
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-      overflow: auto;
-      min-height: 300px;
-    }
-
-    .bubble {
-      max-width: 84%;
-      padding: 14px 16px;
-      border-radius: 18px;
-      line-height: 1.5;
-      font-size: 15px;
-    }
-
-    .bubble.ai {
-      align-self: flex-start;
-      background: #f8f2ff;
-      color: #23152f;
-      border-bottom-left-radius: 6px;
-    }
-
-    .bubble.user {
-      align-self: flex-end;
-      background: var(--accent);
-      color: white;
-      border-bottom-right-radius: 6px;
-    }
-
-    .chat-controls {
-      padding: 18px;
-      border-top: 1px solid var(--line);
-      display: grid;
-      gap: 12px;
-    }
-
-    .input, .select, .textarea {
-      width: 100%;
-      background: rgba(255,255,255,.08);
-      border: 1px solid rgba(255,255,255,.12);
-      color: #fff;
-      border-radius: 16px;
-      padding: 13px 14px;
-      font: inherit;
-    }
-
-    .textarea { min-height: 90px; resize: vertical; }
-
-    .control-row,
-    .button-row,
-    .voice-grid,
-    .meet-grid,
-    .contest-grid,
-    .profile-grid,
-    .discover-grid { display: grid; gap: 14px; }
-
-    .control-row { grid-template-columns: repeat(2, 1fr); }
-    .button-row { grid-template-columns: repeat(3, 1fr); }
-    .voice-grid { grid-template-columns: repeat(2, 1fr); }
-    .meet-grid { grid-template-columns: 1.15fr .85fr; }
-    .discover-grid { grid-template-columns: 1fr 1fr; }
-    .contest-grid { grid-template-columns: repeat(3, 1fr); }
-    .profile-grid { grid-template-columns: 1fr 1fr; }
-
-    .mini-card { padding: 16px; }
-    .mini-card strong { display: block; margin-bottom: 6px; }
-    .mini-card p, .mini-card span { color: var(--muted); font-size: 13px; line-height: 1.55; }
-
-    .swipe-card,
-    .contest-card,
-    .profile-card,
-    .meet-card {
-      overflow: hidden;
-      background: rgba(26,18,39,.84);
-    }
-
-    .photo,
-    .contest-photo {
-      min-height: 280px;
-      position: relative;
-      background:
-        linear-gradient(180deg, rgba(0,0,0,.08), rgba(0,0,0,.35)),
-        linear-gradient(135deg, #3b124b, #7b43ff 58%, #ff7db8);
-    }
-
-    .photo::after,
-    .contest-photo::after {
-      content: "";
-      position: absolute;
-      inset: 14px;
-      border-radius: 18px;
-      border: 1px solid rgba(255,255,255,.16);
-    }
-
-    .badge {
-      position: absolute;
-      top: 16px;
-      left: 16px;
-      padding: 8px 12px;
-      border-radius: 999px;
-      background: rgba(255,255,255,.14);
-      color: white;
-      font-size: 12px;
-      font-weight: 800;
-    }
-
-    .card-copy { padding: 18px; }
-    .card-copy h4 { margin: 0 0 8px; font-size: 24px; }
-    .card-copy p { color: var(--muted); line-height: 1.55; }
-
-    .video-stage {
-      padding: 18px;
-      border-radius: 24px;
-      background: rgba(26,18,39,.84);
-      border: 1px solid var(--line);
-      box-shadow: var(--shadow);
-    }
-
-    .video-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 12px;
-    }
-
-    .video-box {
-      min-height: 300px;
-      border-radius: 20px;
-      background: linear-gradient(135deg, #190d29, #2b1542 55%, #52216e);
-      position: relative;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      border: 1px solid rgba(255,255,255,.08);
-      color: rgba(255,255,255,.75);
-      font-weight: 800;
-      text-align: center;
-      padding: 18px;
-    }
-
-    .video-tag {
-      position: absolute;
-      bottom: 12px;
-      left: 12px;
-      padding: 8px 12px;
-      border-radius: 999px;
-      background: rgba(0,0,0,.34);
-      color: white;
-      font-size: 12px;
-      font-weight: 800;
-    }
-
-    .help-list { margin: 0; padding-left: 18px; color: var(--muted); line-height: 1.7; }
-
-    .notice {
-      padding: 14px 16px;
-      border-radius: 18px;
-      background: rgba(255,255,255,.06);
-      border: 1px solid rgba(255,255,255,.08);
-      color: #fff;
-      font-size: 14px;
-      line-height: 1.5;
-    }
-
-    @media (max-width: 1100px) {
-      .hero, .two-col, .meet-grid, .profile-grid, .discover-grid, .contest-grid { grid-template-columns: 1fr; }
-      .button-row, .control-row, .voice-grid, .video-grid { grid-template-columns: 1fr; }
-      .topbar { align-items: flex-start; flex-direction: column; }
-      .nav-tabs { justify-content: flex-start; }
-    }
-  </style>
+</style>
 </head>
+
 <body>
-  <div class="app-shell">
-    <header class="topbar">
-      <div class="brand-wrap">
-        <h1>BossesNBaddies</h1>
-        <p>Velora social shell with AI Boo, meet & greet, swipe discovery, contests, and profile controls.</p>
-      </div>
 
-      <nav class="nav-tabs">
-        <button class="tab-btn active" data-tab="home">Home</button>
-        <button class="tab-btn" data-tab="velora">AI Boo</button>
-        <button class="tab-btn" data-tab="meet">Meet & Greet</button>
-        <button class="tab-btn" data-tab="discover">Swipe</button>
-        <button class="tab-btn" data-tab="contests">Contests</button>
-        <button class="tab-btn" data-tab="profile">Profile</button>
-      </nav>
-    </header>
+<!-- TABS -->
+<div class="tabbar">
+  <button class="tab-btn active" onclick="openTab('velora')">Velora</button>
+  <button class="tab-btn" onclick="openTab('meet')">Meet</button>
+  <button class="tab-btn" onclick="openTab('discover')">Discover</button>
+  <button class="tab-btn" onclick="openTab('contests')">Contests</button>
+  <button class="tab-btn" onclick="openTab('profile')">Profile</button>
+</div>
 
-    <section class="hero">
-      <div class="hero-card">
-        <h2>Velora is supposed to feel alive, social, and interactive.</h2>
-        <p>
-          This version puts your requested features into actual working tabs: the AI Boo tab, the meet and greet video area,
-          the swipe-style discovery layout, the contest section, and the profile/account area.
-        </p>
-        <div class="hero-actions">
-          <button class="main-btn" data-go-tab="velora">Open AI Boo</button>
-          <button class="ghost-btn" data-go-tab="meet">Open Meet & Greet</button>
-          <button class="ghost-btn" data-go-tab="discover">Open Swipe</button>
-        </div>
-      </div>
+<!-- VELORA -->
+<div id="velora" class="tab-content active">
+  <div class="layout">
+    
+    <div class="chat">
+      <h2>Velora AI</h2>
+      <div id="chatBox"></div>
+      <input id="input" placeholder="type..." />
+      <button onclick="send()">Send</button>
+      <br><br>
+      <button onclick="openTab('ai')">Open AI Boo Page</button>
+    </div>
 
-      <div class="hero-card stats-box">
-        <div class="stat"><strong>6</strong><span>Main tabs now wired together</span></div>
-        <div class="stat"><strong>1</strong><span>Dedicated AI Boo chat tab</span></div>
-        <div class="stat"><strong>3</strong><span>Social modes: Meet, Swipe, Contests</span></div>
-      </div>
-    </section>
+    <div class="sidebar">
+      <h3>Settings</h3>
+      <input id="name" placeholder="AI Name" value="Velora">
+      <select id="personality">
+        <option>Balanced</option>
+        <option>Flirty</option>
+        <option>Savage</option>
+      </select>
+    </div>
 
-    <main>
-      <section id="home" class="tab-content active">
-        <div class="section-grid two-col">
-          <div class="panel">
-            <h3>Home</h3>
-            <p>
-              Welcome to Velora. Use the tabs above to move through the app. This version is set up so the sections actually switch.
-            </p>
-            <div class="notice">
-              Your original issue was that the newer social features were described, but not properly connected to the visible tabs. This file fixes that.
-            </div>
-          </div>
-          <div class="panel">
-            <h3>What is included now</h3>
-            <ul class="help-list">
-              <li>AI Boo tab for user-to-AI interaction</li>
-              <li>Meet & Greet tab for mutual-permission video flow</li>
-              <li>Swipe tab for profile browsing</li>
-              <li>Contests tab for uploads and community drops</li>
-              <li>Profile tab for account and monetization setup</li>
-            </ul>
-          </div>
-        </div>
-      </section>
-
-      <section id="velora" class="tab-content">
-        <div class="section-grid two-col">
-          <div class="chat-card">
-            <div class="chat-head">
-              <div>
-                <div class="name">Velora AI Boo</div>
-                <div style="color: var(--muted); font-size: 13px; margin-top: 4px;">Your flirt, coach, guide, and social assistant</div>
-              </div>
-              <div class="status-pill" id="modeStatus">Balanced mode</div>
-            </div>
-
-            <div class="chat-box" id="chatBox">
-              <div class="bubble ai">Hey boo 💋 I’m Velora. Tap Start Talking or send a message and I’ll interact with you right here.</div>
-              <div class="bubble ai">You can set my personality, language, voice, and custom notes on the right.</div>
-            </div>
-
-            <div class="chat-controls">
-              <input class="input" id="chatInput" placeholder="Type a message to Velora..." />
-              <div class="button-row">
-                <button class="action-btn" id="sendMsg">Send</button>
-                <button class="ghost-btn" id="micBtn">🎤 Start Talking</button>
-                <button class="ghost-btn" id="clearChat">Clear Chat</button>
-              </div>
-            </div>
-          </div>
-
-          <div class="panel">
-            <h3>Velora setup</h3>
-            <div class="control-row">
-              <div>
-                <label for="userName">User name</label>
-                <input class="input" id="userName" placeholder="What should Velora call you?" />
-              </div>
-              <div>
-                <label for="aiName">AI name</label>
-                <input class="input" id="aiName" value="Velora" />
-              </div>
-            </div>
-
-            <div class="control-row">
-              <div>
-                <label for="userLang">User language</label>
-                <select class="select" id="userLang">
-                  <option>English</option>
-                  <option>Spanish</option>
-                  <option>French</option>
-                </select>
-              </div>
-              <div>
-                <label for="aiLang">AI language</label>
-                <select class="select" id="aiLang">
-                  <option>English</option>
-                  <option>Spanish</option>
-                  <option>French</option>
-                </select>
-              </div>
-            </div>
-
-            <div class="control-row">
-              <div>
-                <label for="aiGender">AI gender</label>
-                <select class="select" id="aiGender">
-                  <option>Woman</option>
-                  <option>Man</option>
-                  <option>Neutral</option>
-                </select>
-              </div>
-              <div>
-                <label for="aiPersonality">AI personality</label>
-                <select class="select" id="aiPersonality">
-                  <option>Balanced</option>
-                  <option>Flirty</option>
-                  <option>Savage</option>
-                  <option>Sweet</option>
-                  <option>Bossy</option>
-                </select>
-              </div>
-            </div>
-
-            <div class="control-row">
-              <div>
-                <label for="userVoice">User voice</label>
-                <select class="select" id="userVoice">
-                  <option>Default</option>
-                  <option>Smooth</option>
-                  <option>Confident</option>
-                </select>
-              </div>
-              <div>
-                <label for="aiVoice">AI voice</label>
-                <select class="select" id="aiVoice">
-                  <option>Velora Soft</option>
-                  <option>Velora Luxe</option>
-                  <option>Velora Bold</option>
-                </select>
-              </div>
-            </div>
-
-            <div>
-              <label for="aiNotes">Custom AI notes</label>
-              <textarea class="textarea" id="aiNotes" placeholder="How should Velora act?"></textarea>
-            </div>
-
-            <div class="hero-actions">
-              <button class="main-btn" id="saveSetup">Save Velora Setup</button>
-              <button class="ghost-btn" id="previewVoice">Preview AI Voice</button>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section id="meet" class="tab-content">
-        <div class="meet-grid">
-          <div class="video-stage">
-            <h3>Meet & Greet</h3>
-            <p style="color: var(--muted); margin-top: -4px;">Mutual permission before video connects.</p>
-            <div class="video-grid">
-              <div class="video-box">
-                Camera preview area
-                <div class="video-tag">You</div>
-              </div>
-              <div class="video-box">
-                Waiting for accepted connection
-                <div class="video-tag">Connected user</div>
-              </div>
-            </div>
-            <div class="hero-actions">
-              <button class="main-btn" id="startCamera">Start Camera</button>
-              <button class="ghost-btn" id="requestUser">Request User</button>
-              <button class="ghost-btn" id="acceptRequest">Accept Request</button>
-            </div>
-          </div>
-
-          <div class="panel">
-            <h3>How this mode works</h3>
-            <div class="mini-card">
-              <strong>1. Request first</strong>
-              <span>No instant forced connection.</span>
-            </div>
-            <div class="mini-card">
-              <strong>2. Accept second</strong>
-              <span>Both sides must agree.</span>
-            </div>
-            <div class="mini-card">
-              <strong>3. Connect third</strong>
-              <span>Safer, more intentional meet flow.</span>
-            </div>
-            <div class="notice" id="meetStatus">Camera and live connect actions are demo-wired for the front end right now.</div>
-          </div>
-        </div>
-      </section>
-
-      <section id="discover" class="tab-content">
-        <div class="panel" style="margin-bottom: 18px;">
-          <h3>Swipe interface</h3>
-          <p>Browse profiles, photos, and social cards in the swipe-style layout you asked for.</p>
-        </div>
-
-        <div class="discover-grid">
-          <article class="swipe-card" id="swipeCard">
-            <div class="photo">
-              <div class="badge" id="swipeBadge">Featured vibe</div>
-            </div>
-            <div class="card-copy">
-              <h4 id="swipeName">Nia, 24</h4>
-              <p id="swipeBio">Boss energy, style content, late-night lives, and baddie walk challenge entries.</p>
-              <div class="hero-actions">
-                <button class="ghost-btn" id="passBtn">Pass</button>
-                <button class="main-btn" id="likeBtn">Like</button>
-                <button class="ghost-btn" id="nextBtn">Next</button>
-              </div>
-            </div>
-          </article>
-
-          <div class="panel">
-            <h3>Discovery info</h3>
-            <div class="mini-card">
-              <strong>Swipe mood</strong>
-              <span id="swipeMood">Confident • Creator • Nearby</span>
-            </div>
-            <div class="mini-card">
-              <strong>What this tab supports</strong>
-              <span>Photos, profile cards, discover browsing, and later local matching or hook-up search logic.</span>
-            </div>
-            <div class="notice" id="swipeStatus">Ready to browse profiles.</div>
-          </div>
-        </div>
-      </section>
-
-      <section id="contests" class="tab-content">
-        <div class="panel" style="margin-bottom: 18px;">
-          <h3>Contest tabs</h3>
-          <p>Run women-only boss baddie contests, public challenges, and featured upload drops.</p>
-        </div>
-
-        <div class="contest-grid">
-          <article class="contest-card">
-            <div class="contest-photo"><div class="badge">Women Boss Baddie</div></div>
-            <div class="card-copy">
-              <h4>Baddest Walk</h4>
-              <p>Upload videos showing confidence, style, and stage presence.</p>
-              <button class="main-btn">Upload Entry</button>
-            </div>
-          </article>
-
-          <article class="contest-card">
-            <div class="contest-photo"><div class="badge">Community Drop</div></div>
-            <div class="card-copy">
-              <h4>Boss Energy Clip</h4>
-              <p>Short-form challenge for standout personality and visuals.</p>
-              <button class="main-btn">Submit Short</button>
-            </div>
-          </article>
-
-          <article class="contest-card">
-            <div class="contest-photo"><div class="badge">Featured Ranking</div></div>
-            <div class="card-copy">
-              <h4>Weekly Crown</h4>
-              <p>Highlight top uploads, creator voting, and future gifting support.</p>
-              <button class="main-btn">See Leaderboard</button>
-            </div>
-          </article>
-        </div>
-      </section>
-
-      <section id="profile" class="tab-content">
-        <div class="profile-grid">
-          <div class="profile-card panel">
-            <h3>Account</h3>
-            <p>Login, saved Velora setup, contest participation, and future trust verification.</p>
-            <input class="input" placeholder="Username" />
-            <input class="input" type="password" placeholder="Password" />
-            <div class="hero-actions">
-              <button class="main-btn">Log In</button>
-              <button class="ghost-btn">Register</button>
-            </div>
-          </div>
-
-          <div class="profile-card panel">
-            <h3>Monetization</h3>
-            <p>Google Ads can live in sidebars and future upgrades can include boosts, gifts, subscriptions, and creator perks.</p>
-            <div class="mini-card">
-              <strong>Right sidebar ads</strong>
-              <span>Reserved for banner/video ad placement.</span>
-            </div>
-            <div class="mini-card">
-              <strong>Future monetization</strong>
-              <span>Boosts, gifts, premium features, and creator upgrades.</span>
-            </div>
-          </div>
-        </div>
-      </section>
-    </main>
   </div>
+</div>
 
-  <script>
-    const tabs = document.querySelectorAll('.tab-btn');
-    const sections = document.querySelectorAll('.tab-content');
+<!-- AI BOO PAGE -->
+<div id="ai" class="tab-content">
+  <div class="ai-boo">
 
-    function openTab(tabId) {
-      tabs.forEach(btn => btn.classList.toggle('active', btn.dataset.tab === tabId));
-      sections.forEach(section => section.classList.toggle('active', section.id === tabId));
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
+    <div class="model" id="model"></div>
 
-    tabs.forEach(btn => {
-      btn.addEventListener('click', () => openTab(btn.dataset.tab));
-    });
+    <div class="speech" id="speech">
+      <h2>Hi, I’m Velora 💋</h2>
+      <p>Program me just right.</p>
+    </div>
 
-    document.querySelectorAll('[data-go-tab]').forEach(btn => {
-      btn.addEventListener('click', () => openTab(btn.dataset.goTab));
-    });
+    <div class="builder" id="builder">
+      <h3>Setup Velora</h3>
 
-    const chatBox = document.getElementById('chatBox');
-    const chatInput = document.getElementById('chatInput');
-    const sendMsg = document.getElementById('sendMsg');
-    const clearChat = document.getElementById('clearChat');
-    const micBtn = document.getElementById('micBtn');
-    const saveSetup = document.getElementById('saveSetup');
-    const previewVoice = document.getElementById('previewVoice');
-    const aiPersonality = document.getElementById('aiPersonality');
-    const aiName = document.getElementById('aiName');
-    const userName = document.getElementById('userName');
-    const modeStatus = document.getElementById('modeStatus');
+      <input placeholder="AI Name">
 
-    function addBubble(text, who = 'ai') {
-      const div = document.createElement('div');
-      div.className = `bubble ${who}`;
-      div.textContent = text;
-      chatBox.appendChild(div);
-      chatBox.scrollTop = chatBox.scrollHeight;
-    }
+      <select>
+        <option>English</option>
+        <option>Spanish</option>
+      </select>
 
-    function getReply(message) {
-      const name = (aiName.value || 'Velora').trim();
-      const user = (userName.value || 'boo').trim();
-      const personality = aiPersonality.value;
-      const msg = message.toLowerCase();
+      <select>
+        <option>Flirty</option>
+        <option>Sweet</option>
+        <option>Savage</option>
+      </select>
 
-      if (msg.includes('hi') || msg.includes('hello')) {
-        return `${personality} ${name}: Hey ${user} 💋 I’m right here. Want to flirt, plan, or browse the app together?`;
-      }
-      if (msg.includes('meet')) {
-        return `${name}: Open the Meet & Greet tab and request a user first. That flow is now connected.`;
-      }
-      if (msg.includes('contest')) {
-        return `${name}: Go to Contests and upload an entry for the boss baddie challenge.`;
-      }
-      if (msg.includes('swipe') || msg.includes('discover')) {
-        return `${name}: The Swipe tab is live. Browse profiles and tap Like, Pass, or Next.`;
-      }
-      return `${name}: I got you, ${user}. I’m active in this tab now, and your social tabs are set up in the navigation above.`;
-    }
+      <select>
+        <option>Soft Voice</option>
+        <option>Luxury Voice</option>
+        <option>Boss Voice</option>
+      </select>
 
-    function sendMessage() {
-      const value = chatInput.value.trim();
-      if (!value) return;
-      addBubble(value, 'user');
-      chatInput.value = '';
-      setTimeout(() => addBubble(getReply(value), 'ai'), 350);
-    }
+    </div>
 
-    sendMsg.addEventListener('click', sendMessage);
-    chatInput.addEventListener('keydown', e => {
-      if (e.key === 'Enter') sendMessage();
-    });
+  </div>
+</div>
 
-    clearChat.addEventListener('click', () => {
-      chatBox.innerHTML = '';
-      addBubble('Chat cleared. I’m still here, boo. Say something and I’ll answer.', 'ai');
-    });
+<!-- OTHER TABS -->
+<div id="meet" class="tab-content">Meet page</div>
+<div id="discover" class="tab-content">Swipe page</div>
+<div id="contests" class="tab-content">Contest page</div>
+<div id="profile" class="tab-content">Profile page</div>
 
-    micBtn.addEventListener('click', () => {
-      addBubble('🎤 Voice mode pressed. Front-end demo is active. Hook your real voice backend here next.', 'ai');
-    });
+<script>
 
-    saveSetup.addEventListener('click', () => {
-      const personality = aiPersonality.value;
-      localStorage.setItem('veloraSetup', JSON.stringify({
-        userName: userName.value,
-        aiName: aiName.value,
-        aiPersonality: personality,
-        aiNotes: document.getElementById('aiNotes').value,
-        userLang: document.getElementById('userLang').value,
-        aiLang: document.getElementById('aiLang').value,
-        aiGender: document.getElementById('aiGender').value,
-        userVoice: document.getElementById('userVoice').value,
-        aiVoice: document.getElementById('aiVoice').value
-      }));
-      modeStatus.textContent = `${personality} mode`;
-      addBubble(`${aiName.value || 'Velora'} setup saved. I’ll remember this browser setup for now.`, 'ai');
-    });
+/* TAB SYSTEM */
+function openTab(id){
+  document.querySelectorAll(".tab-content").forEach(t=>t.classList.remove("active"));
+  document.getElementById(id).classList.add("active");
 
-    previewVoice.addEventListener('click', () => {
-      addBubble(`Previewing ${document.getElementById('aiVoice').value}. This is the front-end placeholder for your voice system.`, 'ai');
-    });
+  document.querySelectorAll(".tab-btn").forEach(b=>b.classList.remove("active"));
+}
 
-    aiPersonality.addEventListener('change', () => {
-      modeStatus.textContent = `${aiPersonality.value} mode`;
-    });
+/* CHAT */
+function send(){
+  let input = document.getElementById("input").value;
+  let box = document.getElementById("chatBox");
 
-    const saved = localStorage.getItem('veloraSetup');
-    if (saved) {
-      try {
-        const data = JSON.parse(saved);
-        Object.entries(data).forEach(([key, value]) => {
-          const el = document.getElementById(key);
-          if (el) el.value = value;
-        });
-        modeStatus.textContent = `${data.aiPersonality || 'Balanced'} mode`;
-      } catch (e) {}
-    }
+  box.innerHTML += `<div class="bubble user">${input}</div>`;
+  box.innerHTML += `<div class="bubble ai">Velora: Hey boo 💋</div>`;
+}
 
-    const profiles = [
-      { name: 'Nia, 24', bio: 'Boss energy, style content, late-night lives, and baddie walk challenge entries.', badge: 'Featured vibe', mood: 'Confident • Creator • Nearby' },
-      { name: 'Lexi, 27', bio: 'Model clips, social vibes, and contest-ready confidence.', badge: 'Trending now', mood: 'Flirty • Live host • Popular' },
-      { name: 'Milan, 25', bio: 'Photo drops, premium style, and event-ready visuals.', badge: 'Hot profile', mood: 'Luxury • Nightlife • Active' }
-    ];
+/* AI BOO ANIMATION */
+setTimeout(()=>{
+  document.getElementById("speech").style.display="block";
+},4000);
 
-    let profileIndex = 0;
-    const swipeName = document.getElementById('swipeName');
-    const swipeBio = document.getElementById('swipeBio');
-    const swipeBadge = document.getElementById('swipeBadge');
-    const swipeMood = document.getElementById('swipeMood');
-    const swipeStatus = document.getElementById('swipeStatus');
+setTimeout(()=>{
+  document.getElementById("builder").style.display="block";
+},7000);
 
-    function renderProfile() {
-      const p = profiles[profileIndex % profiles.length];
-      swipeName.textContent = p.name;
-      swipeBio.textContent = p.bio;
-      swipeBadge.textContent = p.badge;
-      swipeMood.textContent = p.mood;
-    }
+</script>
 
-    document.getElementById('nextBtn').addEventListener('click', () => {
-      profileIndex++;
-      renderProfile();
-      swipeStatus.textContent = 'Showing next profile.';
-    });
-
-    document.getElementById('passBtn').addEventListener('click', () => {
-      profileIndex++;
-      renderProfile();
-      swipeStatus.textContent = 'Passed. Moving to the next profile.';
-    });
-
-    document.getElementById('likeBtn').addEventListener('click', () => {
-      swipeStatus.textContent = `${swipeName.textContent} liked.`;
-    });
-
-    const meetStatus = document.getElementById('meetStatus');
-    document.getElementById('startCamera').addEventListener('click', () => {
-      meetStatus.textContent = 'Camera request started. Connect your real media stream here next.';
-    });
-    document.getElementById('requestUser').addEventListener('click', () => {
-      meetStatus.textContent = 'User request sent. Waiting for acceptance.';
-    });
-    document.getElementById('acceptRequest').addEventListener('click', () => {
-      meetStatus.textContent = 'Request accepted. Video session can connect here.';
-    });
-
-    renderProfile();
-  </script>
 </body>
 </html>
