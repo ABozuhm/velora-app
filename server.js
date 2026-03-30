@@ -1,3 +1,5 @@
+cd ~/velora-app
+cat > server.js <<'EOF'
 const express = require("express");
 const path = require("path");
 const http = require("http");
@@ -8,15 +10,17 @@ const app = express();
 const server = http.createServer(app);
 const io = new Server(server);
 
-// Serve static files from public folder
+app.use(express.json());
 app.use(express.static(path.join(__dirname, "public")));
 
-// Basic route (fallback)
 app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname, "public", "index.html"));
 });
 
-// Socket.io connection (for video/chat later)
+app.get("/health", (req, res) => {
+  res.status(200).json({ ok: true });
+});
+
 io.on("connection", (socket) => {
   console.log("User connected:", socket.id);
 
@@ -25,16 +29,15 @@ io.on("connection", (socket) => {
   });
 });
 
-// 🔥 IMPORTANT: Use Render's port
 const PORT = process.env.PORT || 3000;
 
 server.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
-});        "Authorization": `Bearer ${process.env.OPENAI_API_KEY}`,
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({
-        model: "gpt-4o-mini",
+});
+EOF
+git add server.js
+git commit -m "Fix server.js syntax error"
+git push origin main        model: "gpt-4o-mini",
         messages: [
           { role: "system", content: systemPrompt },
           { role: "system", content: langInstruction },
