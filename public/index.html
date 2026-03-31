@@ -1,40 +1,127 @@
-<script>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>BossesNBaddies | Velora</title>
+  <link rel="stylesheet" href="/style.css" />
+</head>
+<body>
+  <div class="page-shell">
 
-/* =========================
-   TAB SYSTEM (WORKING)
-========================= */
-function openTab(id){
-  // hide all tabs
-  document.querySelectorAll(".tab-content").forEach(t=>{
-    t.classList.remove("active");
-  });
+    <aside class="sidebar left-sidebar">
+      <div class="sidebar-card">
+        <h2>BossesNBaddies</h2>
+        <p>Left sidebar for menu, features, and promotions.</p>
+      </div>
 
-  // show selected tab
-  let activeTab = document.getElementById(id);
-  if(activeTab){
-    activeTab.classList.add("active");
-  }
+      <div class="sidebar-card">
+        <h3>Quick Links</h3>
+        <button class="side-btn" onclick="goToPage('/')">Home</button>
+        <button class="side-btn" onclick="goToPage('/setup')">AI Setup</button>
+        <button class="side-btn" onclick="showTab('videos')">Videos</button>
+        <button class="side-btn" onclick="showTab('contest')">Contest</button>
+        <button class="side-btn" onclick="showTab('chat')">Chat</button>
+      </div>
 
-  // update button styles
-  document.querySelectorAll(".tab-btn").forEach(b=>{
-    b.classList.remove("active");
-  });
-}
+      <div class="sidebar-card ad-box">
+        <h3>Ad Space</h3>
+        <p>Your ad can go here.</p>
+      </div>
+    </aside>
 
+    <main class="main-content">
+      <header class="hero">
+        <h1>BossesNBaddies</h1>
+        <p class="hero-sub">Velora live interface with working tabs, sidebars, and AI setup page.</p>
+      </header>
 
-/* =========================
-   CHAT SYSTEM (AI BOO BASIC)
-========================= */
-function send(){
-  let inputEl = document.getElementById("input");
-  let box = document.getElementById("chatBox");
+      <nav class="tab-bar">
+        <button class="tab-btn active" onclick="showTab('home', this)">Home</button>
+        <button class="tab-btn" onclick="showTab('ai', this)">AI Boo</button>
+        <button class="tab-btn" onclick="showTab('videos', this)">Videos</button>
+        <button class="tab-btn" onclick="showTab('contest', this)">Contest</button>
+        <button class="tab-btn" onclick="showTab('chat', this)">Chat</button>
+      </nav>
 
-  if(!inputEl || !box) return;
+      <section id="home" class="tab-panel active">
+        <div class="panel-card">
+          <h2>Welcome</h2>
+          <p>This is the main Velora page.</p>
+          <p>The tabs work. The sidebars stay in place. The AI Setup page opens on its own page.</p>
+          <button class="primary-btn" onclick="goToPage('/setup')">Open AI Setup Page</button>
+        </div>
+      </section>
 
-  let text = inputEl.value.trim();
-  if(text === "") return;
+      <section id="ai" class="tab-panel">
+        <div class="panel-card center-card">
+          <div class="ai-orb">AI</div>
+          <h2>Velora AI Boo</h2>
+          <p>Tap below to go to the setup page where Velora walks across the screen and greets the user.</p>
+          <button class="primary-btn" onclick="goToPage('/setup')">Go to AI Setup</button>
+        </div>
+      </section>
 
-  // user message
+      <section id="videos" class="tab-panel">
+        <div class="panel-card">
+          <h2>Videos</h2>
+          <p>Users can upload or feature videos here later.</p>
+          <div class="placeholder-grid">
+            <div class="placeholder-box">Featured Video 1</div>
+            <div class="placeholder-box">Featured Video 2</div>
+            <div class="placeholder-box">Featured Short 1</div>
+          </div>
+        </div>
+      </section>
+
+      <section id="contest" class="tab-panel">
+        <div class="panel-card">
+          <h2>Boss Baddie Contest</h2>
+          <p>Separate contest section for uploads and featured entries.</p>
+          <div class="contest-box">
+            <p>Upload area placeholder</p>
+            <button class="primary-btn" type="button">Upload Entry</button>
+          </div>
+        </div>
+      </section>
+
+      <section id="chat" class="tab-panel">
+        <div class="panel-card">
+          <h2>Velora Chat</h2>
+          <div id="chatBox" class="chat-box">
+            <div class="bot-msg">Hi, I’m Velora. Tell me how you want me programmed.</div>
+          </div>
+
+          <div class="chat-input-row">
+            <input id="chatInput" type="text" placeholder="Type here..." />
+            <button class="primary-btn" onclick="sendMessage()">Send</button>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <aside class="sidebar right-sidebar">
+      <div class="sidebar-card">
+        <h3>Right Sidebar Ad</h3>
+        <p>Use this space for your channel, brand promo, or sponsor area.</p>
+      </div>
+
+      <div class="sidebar-card">
+        <h3>Announcements</h3>
+        <p>New voices, new AI personalities, and more features coming.</p>
+      </div>
+
+      <div class="sidebar-card">
+        <h3>Status</h3>
+        <p id="statusText">Tabs loaded.</p>
+      </div>
+    </aside>
+
+  </div>
+
+  <script src="/app.js"></script>
+</body>
+</html>  // user message
   box.innerHTML += `<div class="bubble user">${text}</div>`;
 
   // AI response
