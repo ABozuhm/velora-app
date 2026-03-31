@@ -1,7 +1,7 @@
 {
   "name": "velora-app",
   "version": "1.0.0",
-  "description": "Velora Voice + AI setup app",
+  "description": "Velora live app",
   "main": "server.js",
   "scripts": {
     "start": "node server.js"
