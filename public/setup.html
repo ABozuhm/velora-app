@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Velora AI Setup</title>
+  <link rel="stylesheet" href="/style.css" />
+</head>
+<body class="setup-body">
+  <div class="setup-page">
+
+    <header class="setup-header">
+      <h1>Velora AI Setup</h1>
+      <button class="primary-btn" onclick="goToPage('/')">Back Home</button>
+    </header>
+
+    <section class="runway-section">
+      <div class="runway"></div>
+
+      <div id="walker" class="walker-wrap">
+        <div class="walker">
+          <div class="head"></div>
+          <div class="body"></div>
+          <div class="arm arm-left"></div>
+          <div class="arm arm-right"></div>
+          <div class="leg leg-left"></div>
+          <div class="leg leg-right"></div>
+        </div>
+      </div>
+
+      <div id="speechBubble" class="speech-bubble hidden">
+        Hi, program me just right.
+      </div>
+    </section>
+
+    <section id="setupFormSection" class="panel-card hidden reveal-card">
+      <h2>Program Velora</h2>
+
+      <form id="setupForm" class="setup-form">
+        <label>
+          Language
+          <select id="language">
+            <option>English</option>
+            <option>Spanish</option>
+            <option>French</option>
+            <option>Portuguese</option>
+            <option>Arabic</option>
+            <option>Japanese</option>
+          </select>
+        </label>
+
+        <label>
+          Desired AI Name
+          <input id="aiName" type="text" placeholder="Velora" />
+        </label>
+
+        <label>
+          Desired Personality
+          <select id="personality">
+            <option>Sweet</option>
+            <option>Bossy</option>
+            <option>Classy</option>
+            <option>Luxury</option>
+            <option>Romantic</option>
+            <option>Savage</option>
+          </select>
+        </label>
+
+        <label>
+          Real-Like Voice
+          <select id="voice">
+            <option>Velvet Muse</option>
+            <option>Soft Glow</option>
+            <option>Midnight Luxe</option>
+            <option>Golden Diva</option>
+            <option>Boss Babe</option>
+            <option>Silk Siren</option>
+          </select>
+        </label>
+
+        <button type="submit" class="primary-btn">Save Setup</button>
+      </form>
+
+      <div id="saveResult" class="save-result"></div>
+    </section>
+
+  </div>
+
+  <script src="/app.js"></script>
+</body>
+</html>
