@@ -1,40 +1,104 @@
-const PROFILE_KEY = "velora-profile";
-const SESSION_KEY = "velora-session";
-const HISTORY_KEY = "velora-history";
-const AUTH_KEY = "velora-auth-user";
-const AUTH_TOKEN_KEY = "velora-auth-token";
-const MAX_HISTORY = 20;
-const DEFAULT_API_BASE = "";
+function goToPage(url) {
+  window.location.href = url;
+}
 
-const LANGUAGE_OPTIONS = [
-  { value: "en-US", label: "English (US)" },
-  { value: "en-GB", label: "English (UK)" },
-  { value: "es-MX", label: "Spanish (Latin America)" },
-  { value: "es-ES", label: "Spanish (Spain)" },
-  { value: "pt-BR", label: "Portuguese (Brazil)" },
-  { value: "pt-PT", label: "Portuguese (Portugal)" },
-  { value: "fr-FR", label: "French" },
-  { value: "de-DE", label: "German" },
-  { value: "it-IT", label: "Italian" },
-  { value: "nl-NL", label: "Dutch" },
-  { value: "pl-PL", label: "Polish" },
-  { value: "ru-RU", label: "Russian" },
-  { value: "tr-TR", label: "Turkish" },
-  { value: "ar-SA", label: "Arabic" },
-  { value: "hi-IN", label: "Hindi" },
-  { value: "ja-JP", label: "Japanese" },
-  { value: "ko-KR", label: "Korean" },
-  { value: "zh-CN", label: "Chinese (Simplified)" },
-  { value: "zh-TW", label: "Chinese (Traditional)" },
-  { value: "zh-HK", label: "Chinese (Hong Kong / Cantonese)" },
-  { value: "th-TH", label: "Thai" },
-  { value: "vi-VN", label: "Vietnamese" },
-  { value: "id-ID", label: "Indonesian" },
-  { value: "fil-PH", label: "Filipino" },
-  { value: "sw-KE", label: "Swahili" }
-];
+function showTab(tabId, btn = null) {
+  const panels = document.querySelectorAll(".tab-panel");
+  panels.forEach((panel) => panel.classList.remove("active"));
 
-const VOICE_PRESETS = {
+  const target = document.getElementById(tabId);
+  if (target) target.classList.add("active");
+
+  const buttons = document.querySelectorAll(".tab-btn");
+  buttons.forEach((button) => button.classList.remove("active"));
+
+  if (btn) btn.classList.add("active");
+
+  const status = document.getElementById("statusText");
+  if (status) {
+    status.textContent = `Showing: ${tabId}`;
+  }
+}
+
+async function sendMessage() {
+  const input = document.getElementById("chatInput");
+  const chatBox = document.getElementById("chatBox");
+
+  if (!input || !chatBox) return;
+
+  const message = input.value.trim();
+  if (!message) return;
+
+  const userDiv = document.createElement("div");
+  userDiv.className = "user-msg";
+  userDiv.textContent = message;
+  chatBox.appendChild(userDiv);
+
+  input.value = "";
+
+  try {
+    const response = await fetch("/api/chat", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ message })
+    });
+
+    const data = await response.json();
+
+    const botDiv = document.createElement("div");
+    botDiv.className = "bot-msg";
+    botDiv.textContent = data.reply || "Velora is here.";
+    chatBox.appendChild(botDiv);
+    chatBox.scrollTop = chatBox.scrollHeight;
+  } catch (error) {
+    const botDiv = document.createElement("div");
+    botDiv.className = "bot-msg";
+    botDiv.textContent = "Chat is not available right now.";
+    chatBox.appendChild(botDiv);
+  }
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+  const chatInput = document.getElementById("chatInput");
+  if (chatInput) {
+    chatInput.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") {
+        sendMessage();
+      }
+    });
+  }
+
+  const speechBubble = document.getElementById("speechBubble");
+  const setupFormSection = document.getElementById("setupFormSection");
+
+  if (speechBubble && setupFormSection) {
+    setTimeout(() => {
+      speechBubble.classList.remove("hidden");
+    }, 4700);
+
+    setTimeout(() => {
+      setupFormSection.classList.remove("hidden");
+    }, 5600);
+  }
+
+  const setupForm = document.getElementById("setupForm");
+  if (setupForm) {
+    setupForm.addEventListener("submit", (e) => {
+      e.preventDefault();
+
+      const language = document.getElementById("language").value;
+      const aiName = document.getElementById("aiName").value || "Velora";
+      const personality = document.getElementById("personality").value;
+      const voice = document.getElementById("voice").value;
+
+      const saveResult = document.getElementById("saveResult");
+      saveResult.textContent =
+        `Saved: ${aiName} | ${language} | ${personality} | ${voice}`;
+    });
+  }
+});const VOICE_PRESETS = {
   velvet: {
     label: "Velvet After Dark",
     rate: 0.94,
