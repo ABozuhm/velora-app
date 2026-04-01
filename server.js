@@ -1,46 +1,99 @@
+require("dotenv").config();
 const express = require("express");
 const path = require("path");
-require("dotenv").config();
 
 const app = express();
-const PORT = process.env.PORT || 3000;
 
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+// Middleware
+app.use(express.json({ limit: "1mb" }));
 app.use(express.static(path.join(__dirname, "public")));
 
+// Basic pages
 app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname, "public", "index.html"));
-});
-
-app.get("/setup", (req, res) => {
-  res.sendFile(path.join(__dirname, "public", "setup.html"));
 });
 
 app.get("/health", (req, res) => {
   res.status(200).json({ ok: true });
 });
 
-app.post("/api/chat", (req, res) => {
-  const { message } = req.body || {};
-  const text = String(message || "").trim().toLowerCase();
+// Voice route
+app.post("/api/voice", async (req, res) => {
+  try {
+    const { text, voice, model } = req.body || {};
 
-  let reply = "Hi, I’m Velora. Tell me how you want me programmed.";
+    if (!process.env.OPENAI_API_KEY) {
+      return res.status(500).json({
+        error: "Missing OPENAI_API_KEY in environment variables."
+      });
+    }
 
-  if (text.includes("hi") || text.includes("hello")) {
-    reply = "Hi beautiful, I’m Velora. Tap the tabs, explore the app, or open the AI Setup page.";
-  } else if (text.includes("name")) {
-    reply = "You can choose my AI name on the AI Setup page.";
-  } else if (text.includes("voice")) {
-    reply = "You can choose a real-like voice from the Voice menu on the AI Setup page.";
-  } else if (text.includes("personality")) {
-    reply = "You can choose a sweet, bossy, classy, romantic, savage, or luxury personality.";
-  } else if (text.includes("program")) {
-    reply = "Open AI Setup and fill in language, AI name, personality, and voice.";
+    if (!text || typeof text !== "string" || !text.trim()) {
+      return res.status(400).json({
+        error: "Text is required."
+      });
+    }
+
+    const selectedVoice = typeof voice === "string" && voice.trim()
+      ? voice.trim()
+      : "alloy";
+
+    const selectedModel = typeof model === "string" && model.trim()
+      ? model.trim()
+      : "gpt-4o-mini-tts";
+
+    const response = await fetch("https://api.openai.com/v1/audio/speech", {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${process.env.OPENAI_API_KEY}`,
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        model: selectedModel,
+        voice: selectedVoice,
+        input: text,
+        response_format: "mp3"
+      })
+    });
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      console.error("OpenAI TTS error:", errorText);
+
+      return res.status(response.status).json({
+        error: "OpenAI voice request failed.",
+        details: errorText
+      });
+    }
+
+    const audioBuffer = Buffer.from(await response.arrayBuffer());
+
+    res.setHeader("Content-Type", "audio/mpeg");
+    res.setHeader("Content-Length", audioBuffer.length);
+    return res.send(audioBuffer);
+  } catch (error) {
+    console.error("Server voice error:", error);
+    return res.status(500).json({
+      error: "Voice generation failed."
+    });
   }
-
-  res.json({ reply });
 });
+
+// Optional: list a few voice presets for your frontend
+app.get("/api/voices", (req, res) => {
+  res.json({
+    voices: [
+      { id: "alloy", label: "Alloy" },
+      { id: "ash", label: "Ash" },
+      { id: "ballad", label: "Ballad" },
+      { id: "coral", label: "Coral" },
+      { id: "sage", label: "Sage" },
+      { id: "verse", label: "Verse" }
+    ]
+  });
+});
+
+const PORT = process.env.PORT || 3000;
 
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
