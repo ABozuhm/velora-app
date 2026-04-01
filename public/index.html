@@ -12,29 +12,781 @@
     }
 
     :root {
-      --bg: #08070d;
-      --panel: rgba(18, 18, 30, 0.92);
-      --panel-2: rgba(24, 24, 40, 0.95);
-      --border: rgba(255, 255, 255, 0.09);
-      --text: #f5f1ff;
-      --muted: #b9aed6;
+      --bg: #0b0911;
+      --panel: rgba(18, 16, 28, 0.94);
+      --panel-2: rgba(24, 20, 38, 0.96);
+      --border: rgba(255, 255, 255, 0.08);
+      --text: #f7f2ff;
+      --muted: #c4b8de;
       --pink: #ff4fa3;
       --purple: #8c52ff;
-      --blue: #58b5ff;
-      --gold: #ffcc66;
-      --shadow: 0 20px 40px rgba(0, 0, 0, 0.35);
+      --blue: #64b7ff;
+      --shadow: 0 18px 40px rgba(0, 0, 0, 0.35);
       --radius: 20px;
     }
 
     body {
       min-height: 100vh;
       font-family: Arial, Helvetica, sans-serif;
+      color: var(--text);
       background:
         radial-gradient(circle at top left, rgba(255, 79, 163, 0.18), transparent 30%),
-        radial-gradient(circle at top right, rgba(88, 181, 255, 0.18), transparent 28%),
-        linear-gradient(180deg, #0a0911 0%, #100c1c 100%);
-      color: var(--text);
+        radial-gradient(circle at top right, rgba(100, 183, 255, 0.16), transparent 28%),
+        linear-gradient(180deg, #08070d 0%, #120d1f 100%);
     }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    .app-shell {
+      display: grid;
+      grid-template-columns: 255px 1fr 300px;
+      gap: 18px;
+      min-height: 100vh;
+      padding: 18px;
+    }
+
+    .sidebar,
+    .main-panel,
+    .rightbar {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(14px);
+    }
+
+    .sidebar,
+    .rightbar {
+      padding: 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .brand {
+      padding: 18px;
+      border-radius: 18px;
+      border: 1px solid rgba(255,255,255,0.08);
+      background: linear-gradient(135deg, rgba(255,79,163,0.16), rgba(140,82,255,0.16));
+    }
+
+    .brand h1 {
+      font-size: 1.9rem;
+      line-height: 1.05;
+      margin-bottom: 8px;
+      letter-spacing: 0.5px;
+    }
+
+    .brand p {
+      color: var(--muted);
+      line-height: 1.45;
+      font-size: 0.95rem;
+    }
+
+    .nav-title {
+      font-size: 0.82rem;
+      text-transform: uppercase;
+      letter-spacing: 1.4px;
+      color: #dfd3ff;
+      opacity: 0.82;
+      margin-bottom: 4px;
+    }
+
+    .nav-group {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .tab-btn {
+      display: block;
+      width: 100%;
+      padding: 14px 15px;
+      border-radius: 14px;
+      border: 1px solid rgba(255,255,255,0.08);
+      background: linear-gradient(135deg, rgba(255,255,255,0.05), rgba(255,255,255,0.02));
+      color: var(--text);
+      font-size: 0.97rem;
+      transition: 0.2s ease;
+      cursor: pointer;
+    }
+
+    button.tab-btn {
+      text-align: left;
+    }
+
+    .tab-btn:hover,
+    .tab-btn.active {
+      transform: translateY(-1px);
+      border-color: rgba(255,255,255,0.18);
+      background: linear-gradient(135deg, rgba(255,79,163,0.18), rgba(88,181,255,0.10));
+    }
+
+    .mini-card,
+    .content-card,
+    .hero-card,
+    .feature-box,
+    .ad-card,
+    .stat,
+    .highlight-card {
+      background: var(--panel-2);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+    }
+
+    .mini-card,
+    .content-card,
+    .hero-card,
+    .ad-card,
+    .highlight-card {
+      padding: 18px;
+    }
+
+    .mini-card h3,
+    .content-card h3,
+    .hero-card h3,
+    .ad-card h3,
+    .highlight-card h3 {
+      margin-bottom: 10px;
+    }
+
+    .mini-card p,
+    .content-card p,
+    .hero-card p,
+    .ad-card p,
+    .feature-box p,
+    .highlight-card p,
+    .stat span,
+    .footer-note,
+    li {
+      color: var(--muted);
+      line-height: 1.5;
+    }
+
+    .mini-card ul {
+      padding-left: 18px;
+      margin-top: 8px;
+    }
+
+    .main-panel {
+      padding: 18px;
+      overflow: hidden;
+    }
+
+    .main-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      padding: 18px;
+      margin-bottom: 18px;
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 18px;
+      background: linear-gradient(135deg, rgba(255,79,163,0.14), rgba(100,183,255,0.12));
+    }
+
+    .main-header h2 {
+      font-size: 1.4rem;
+      margin-bottom: 6px;
+    }
+
+    .main-header p {
+      color: var(--muted);
+      font-size: 0.95rem;
+    }
+
+    .status-pill {
+      padding: 10px 14px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,0.12);
+      background: rgba(255,255,255,0.06);
+      font-size: 0.88rem;
+      white-space: nowrap;
+    }
+
+    .tab-content {
+      display: none;
+      animation: fadeUp 0.22s ease;
+    }
+
+    .tab-content.active {
+      display: block;
+    }
+
+    @keyframes fadeUp {
+      from {
+        opacity: 0;
+        transform: translateY(8px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .grid-2,
+    .grid-3,
+    .highlight-grid {
+      display: grid;
+      gap: 16px;
+    }
+
+    .grid-2 {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .grid-3 {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .highlight-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      margin-top: 18px;
+    }
+
+    .feature-box {
+      padding: 16px;
+    }
+
+    .feature-box h4 {
+      margin-bottom: 8px;
+    }
+
+    .hero-card {
+      margin-bottom: 18px;
+    }
+
+    .content-card {
+      margin-top: 18px;
+    }
+
+    .hero-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 16px;
+    }
+
+    .btn {
+      display: inline-block;
+      padding: 13px 16px;
+      border-radius: 14px;
+      font-weight: bold;
+      font-size: 0.94rem;
+      border: 1px solid rgba(255,255,255,0.08);
+      transition: 0.2s ease;
+    }
+
+    .btn:hover {
+      transform: translateY(-1px);
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--pink), var(--purple));
+      color: #fff;
+    }
+
+    .btn-secondary {
+      background: rgba(255,255,255,0.05);
+      color: #fff;
+    }
+
+    .highlight-card {
+      min-height: 155px;
+    }
+
+    .highlight-card strong {
+      display: inline-block;
+      margin-bottom: 10px;
+      color: #fff;
+      font-size: 1rem;
+    }
+
+    .mock-panel {
+      margin-top: 18px;
+      padding: 18px;
+      border-radius: 18px;
+      border: 1px solid rgba(255,255,255,0.08);
+      background:
+        radial-gradient(circle at center, rgba(255,79,163,0.16), transparent 35%),
+        linear-gradient(180deg, rgba(25, 19, 42, 0.96), rgba(16, 12, 28, 0.98));
+    }
+
+    .mock-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    .mock-header h4 {
+      font-size: 1.08rem;
+    }
+
+    .mock-badge {
+      padding: 8px 12px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.08);
+      font-size: 0.84rem;
+      color: #fff;
+    }
+
+    .mock-grid {
+      display: grid;
+      grid-template-columns: 1.1fr 0.9fr;
+      gap: 16px;
+    }
+
+    .mock-screen,
+    .mock-controls {
+      border-radius: 16px;
+      border: 1px solid rgba(255,255,255,0.08);
+      background: rgba(255,255,255,0.04);
+      padding: 16px;
+    }
+
+    .screen-stage {
+      min-height: 280px;
+      border-radius: 14px;
+      background:
+        linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01)),
+        radial-gradient(circle at center, rgba(255,79,163,0.16), transparent 35%);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .stage-glow {
+      position: absolute;
+      inset: auto 50% 20px 50%;
+      transform: translateX(-50%);
+      width: 220px;
+      height: 28px;
+      border-radius: 50%;
+      background: rgba(255, 79, 163, 0.18);
+      filter: blur(10px);
+    }
+
+    .stage-avatar {
+      position: absolute;
+      left: 50%;
+      bottom: 48px;
+      transform: translateX(-50%);
+      width: 120px;
+      height: 170px;
+      border-radius: 60px 60px 28px 28px;
+      background: linear-gradient(180deg, #ff88c7 0%, #bd74ff 55%, #764cff 100%);
+      box-shadow: 0 18px 36px rgba(0,0,0,0.3);
+    }
+
+    .stage-avatar::before {
+      content: "";
+      position: absolute;
+      top: -34px;
+      left: 24px;
+      width: 72px;
+      height: 72px;
+      border-radius: 50%;
+      background: linear-gradient(180deg, #ffdcee, #ffc1dd);
+    }
+
+    .stage-caption {
+      margin-top: 14px;
+      padding: 14px;
+      border-radius: 14px;
+      border: 1px solid rgba(255,255,255,0.08);
+      background: rgba(255,255,255,0.05);
+      color: #fff;
+      line-height: 1.45;
+    }
+
+    .control-list {
+      display: grid;
+      gap: 12px;
+    }
+
+    .control-item {
+      padding: 14px;
+      border-radius: 14px;
+      border: 1px solid rgba(255,255,255,0.08);
+      background: rgba(255,255,255,0.04);
+    }
+
+    .control-item strong {
+      display: block;
+      margin-bottom: 6px;
+      color: #fff;
+    }
+
+    .ad-thumb {
+      width: 100%;
+      overflow: hidden;
+      border-radius: 14px;
+      border: 1px solid rgba(255,255,255,0.08);
+      background: #111;
+      margin-bottom: 12px;
+    }
+
+    .ad-thumb img {
+      width: 100%;
+      display: block;
+      object-fit: cover;
+    }
+
+    .ad-actions {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .link-btn {
+      display: inline-block;
+      text-align: center;
+      padding: 12px 14px;
+      border-radius: 12px;
+      font-weight: bold;
+      border: 1px solid rgba(255,255,255,0.08);
+      background: rgba(255,255,255,0.05);
+    }
+
+    .link-btn.primary {
+      background: linear-gradient(135deg, var(--pink), var(--purple));
+      color: #fff;
+    }
+
+    .stats {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .stat {
+      padding: 14px;
+    }
+
+    .stat strong {
+      display: block;
+      margin-bottom: 4px;
+      font-size: 1.12rem;
+      color: #fff;
+    }
+
+    .footer-note {
+      margin-top: auto;
+      text-align: center;
+      font-size: 0.84rem;
+      opacity: 0.85;
+    }
+
+    @media (max-width: 1100px) {
+      .app-shell {
+        grid-template-columns: 225px 1fr;
+      }
+
+      .rightbar {
+        grid-column: 1 / -1;
+      }
+
+      .grid-3,
+      .highlight-grid,
+      .mock-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 840px) {
+      .app-shell {
+        grid-template-columns: 1fr;
+      }
+
+      .grid-2,
+      .grid-3,
+      .highlight-grid,
+      .mock-grid,
+      .stats {
+        grid-template-columns: 1fr;
+      }
+
+      .main-header {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar">
+      <div class="brand">
+        <h1>Velora Live</h1>
+        <p>Main hub for your layout, your content world, and the separate AI Boo experience.</p>
+      </div>
+
+      <div class="nav-group">
+        <div class="nav-title">Main Tabs</div>
+        <button class="tab-btn active" data-tab="home">Home</button>
+        <a class="tab-btn" href="/youtube.html">AI Boo</a>
+        <button class="tab-btn" data-tab="spotlight">Spotlight</button>
+        <button class="tab-btn" data-tab="community">Community</button>
+        <button class="tab-btn" data-tab="settings">Settings</button>
+      </div>
+
+      <div class="mini-card">
+        <h3>Important</h3>
+        <p>
+          AI Boo now opens as its own page. It is no longer inside this homepage.
+        </p>
+      </div>
+
+      <div class="mini-card">
+        <h3>What this page does</h3>
+        <ul>
+          <li>Keeps the main Velora layout</li>
+          <li>Keeps your right sidebar YouTube promo</li>
+          <li>Sends AI Boo to <strong>/youtube.html</strong></li>
+          <li>Leaves room for later upgrades</li>
+        </ul>
+      </div>
+
+      <p class="footer-note">Velora home layout</p>
+    </aside>
+
+    <main class="main-panel">
+      <div class="main-header">
+        <div>
+          <h2 id="pageTitle">Welcome to Velora Live</h2>
+          <p id="pageSubtitle">
+            Main homepage with your right-side YouTube ad and a separate AI Boo destination.
+          </p>
+        </div>
+        <div class="status-pill">Homepage Active</div>
+      </div>
+
+      <section class="tab-content active" id="home">
+        <div class="hero-card">
+          <h3>Main Velora Homepage</h3>
+          <p>
+            This page is now the home layout only. The AI Boo tab opens a different page so it can be the
+            full YouTube Voice Assistant build instead of a section inside this homepage.
+          </p>
+
+          <div class="hero-actions">
+            <a class="btn btn-primary" href="/youtube.html">Open AI Boo</a>
+            <a class="btn btn-secondary" href="https://youtube-voice-assistant.onrender.com/youtube.html" target="_blank" rel="noopener noreferrer">Open Original Voice Assist</a>
+          </div>
+        </div>
+
+        <div class="grid-3">
+          <div class="feature-box">
+            <h4>Separate AI Boo Page</h4>
+            <p>Clicking AI Boo now goes to its own page instead of switching a tab section inside this file.</p>
+          </div>
+          <div class="feature-box">
+            <h4>Lifelike Voice Goal</h4>
+            <p>Realistic voices and every-language support will need backend voice service integration.</p>
+          </div>
+          <div class="feature-box">
+            <h4>Right Sidebar Ad</h4>
+            <p>Your YouTube channel stays featured on the right exactly as the promo area.</p>
+          </div>
+        </div>
+
+        <div class="content-card">
+          <h3>How AI Boo should work</h3>
+          <p>
+            The separate page should become the real assistant experience with natural female voice choices,
+            many realistic voice styles, broad language support, and the exact YouTube Voice Assistant layout.
+          </p>
+        </div>
+      </section>
+
+      <section class="tab-content" id="spotlight">
+        <div class="hero-card">
+          <h3>AI Boo Spotlight</h3>
+          <p>
+            This is a preview area only. The real build belongs on the separate <strong>/youtube.html</strong> page.
+          </p>
+        </div>
+
+        <div class="mock-panel">
+          <div class="mock-header">
+            <h4>Separate Page Preview</h4>
+            <div class="mock-badge">/youtube.html</div>
+          </div>
+
+          <div class="mock-grid">
+            <div class="mock-screen">
+              <div class="screen-stage">
+                <div class="stage-avatar"></div>
+                <div class="stage-glow"></div>
+              </div>
+              <div class="stage-caption">
+                Hi... I’m Velora. On the separate AI Boo page, this should become the full voice assistant experience with natural voice options and language setup.
+              </div>
+            </div>
+
+            <div class="mock-controls">
+              <div class="control-list">
+                <div class="control-item">
+                  <strong>Lifelike Female Voices</strong>
+                  Browser speech is not enough. This needs real voice tech.
+                </div>
+                <div class="control-item">
+                  <strong>Many Languages</strong>
+                  You wanted broad language coverage, not just a few options.
+                </div>
+                <div class="control-item">
+                  <strong>Exact YouTube Assist Build</strong>
+                  Clicking AI Boo should land on the same structure as the voice assistant page.
+                </div>
+                <div class="control-item">
+                  <strong>Future Backend Hookup</strong>
+                  Voice selection, language settings, and assistant personality should save and run from the server.
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="tab-content" id="community">
+        <div class="hero-card">
+          <h3>Community</h3>
+          <p>
+            This section can later hold uploads, profiles, contests, social pages, and future bot/profile systems.
+          </p>
+        </div>
+
+        <div class="grid-2">
+          <div class="highlight-card">
+            <strong>Creator Upload Zone</strong>
+            <p>Future area for videos, shorts, challenges, and content submissions.</p>
+          </div>
+          <div class="highlight-card">
+            <strong>Profile / Page System</strong>
+            <p>Future area for user pages, branded pages, and controlled bot-style profiles.</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="tab-content" id="settings">
+        <div class="hero-card">
+          <h3>Settings</h3>
+          <p>
+            Placeholder section for future appearance, behavior, and assistant system settings.
+          </p>
+        </div>
+
+        <div class="highlight-grid">
+          <div class="highlight-card">
+            <strong>Appearance</strong>
+            <p>Keep the dark luxury Velora style while you refine the rest of the system.</p>
+          </div>
+          <div class="highlight-card">
+            <strong>Assistant Routing</strong>
+            <p>AI Boo now routes to its own page so the assistant can have a dedicated experience.</p>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <aside class="rightbar">
+      <div class="ad-card">
+        <h3>Featured Channel Ad</h3>
+        <p>Your YouTube channel stays here on the right sidebar as the promo area.</p>
+
+        <div class="ad-thumb">
+          <img
+            src="https://img.youtube.com/vi/JAbvKIzLGeQ/hqdefault.jpg"
+            alt="Featured YouTube video thumbnail"
+          />
+        </div>
+
+        <div class="ad-actions">
+          <a class="link-btn primary" href="https://www.youtube.com/channel/UCAIEONU-Ie_G30ZWkn-YNMg" target="_blank" rel="noopener noreferrer">
+            Visit My YouTube Channel
+          </a>
+          <a class="link-btn" href="https://www.youtube.com/watch?v=JAbvKIzLGeQ&t=4s" target="_blank" rel="noopener noreferrer">
+            Watch Featured Video
+          </a>
+        </div>
+      </div>
+
+      <div class="mini-card">
+        <h3>AI Boo Routing</h3>
+        <p>
+          The AI Boo tab now opens <strong>/youtube.html</strong> instead of opening content inside this homepage.
+        </p>
+      </div>
+
+      <div class="stats">
+        <div class="stat">
+          <strong>AI Boo</strong>
+          <span>Separate page</span>
+        </div>
+        <div class="stat">
+          <strong>YouTube Ad</strong>
+          <span>Right sidebar</span>
+        </div>
+      </div>
+
+      <div class="mini-card">
+        <h3>Next real upgrade</h3>
+        <p>
+          The voice itself still needs backend integration for lifelike speech and broad language support.
+        </p>
+      </div>
+    </aside>
+  </div>
+
+  <script>
+    const tabButtons = document.querySelectorAll("button.tab-btn[data-tab]");
+    const tabContents = document.querySelectorAll(".tab-content");
+    const pageTitle = document.getElementById("pageTitle");
+    const pageSubtitle = document.getElementById("pageSubtitle");
+
+    const tabMeta = {
+      home: {
+        title: "Welcome to Velora Live",
+        subtitle: "Main homepage with your right-side YouTube ad and a separate AI Boo destination."
+      },
+      spotlight: {
+        title: "AI Boo Spotlight",
+        subtitle: "Preview only. The real AI Boo experience belongs on /youtube.html."
+      },
+      community: {
+        title: "Community",
+        subtitle: "Future space for uploads, contests, profiles, and social systems."
+      },
+      settings: {
+        title: "Velora Settings",
+        subtitle: "Placeholder area for future controls and appearance options."
+      }
+    };
+
+    tabButtons.forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const tabId = btn.dataset.tab;
+
+        tabButtons.forEach((b) => b.classList.remove("active"));
+        tabContents.forEach((content) => content.classList.remove("active"));
+
+        btn.classList.add("active");
+        document.getElementById(tabId).classList.add("active");
+
+        if (tabMeta[tabId]) {
+          pageTitle.textContent = tabMeta[tabId].title;
+          pageSubtitle.textContent = tabMeta[tabId].subtitle;
+        }
+      });
+    });
+  </script>
+</body>
+</html>    }
 
     a {
       color: inherit;
