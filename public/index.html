@@ -3,37 +3,800 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>BossesNBaddies | Velora</title>
-  <link rel="stylesheet" href="/style.css" />
+  <title>Velora Live</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: Arial, Helvetica, sans-serif;
+      background: linear-gradient(135deg, #120018, #1f0030, #2a0040);
+      color: #fff;
+      min-height: 100vh;
+    }
+
+    a { color: inherit; text-decoration: none; }
+
+    .app-shell {
+      display: grid;
+      grid-template-columns: 240px 1fr 280px;
+      min-height: 100vh;
+    }
+
+    .sidebar-left,
+    .sidebar-right {
+      background: rgba(10, 10, 18, 0.88);
+      backdrop-filter: blur(10px);
+      border-right: 1px solid rgba(255,255,255,0.08);
+      padding: 20px 16px;
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      overflow-y: auto;
+    }
+
+    .sidebar-right {
+      border-right: none;
+      border-left: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .brand {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .brand h1 {
+      font-size: 2rem;
+      letter-spacing: 1px;
+      color: #ff66cc;
+      text-shadow: 0 0 16px rgba(255, 102, 204, 0.45);
+    }
+
+    .brand p {
+      margin-top: 6px;
+      color: #caa6ff;
+      font-size: 0.92rem;
+    }
+
+    .nav-title,
+    .panel-title {
+      font-size: 0.85rem;
+      color: #d9b8ff;
+      margin-bottom: 10px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .nav-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-bottom: 24px;
+    }
+
+    .nav-btn {
+      width: 100%;
+      border: none;
+      border-radius: 14px;
+      padding: 14px 14px;
+      text-align: left;
+      background: rgba(255,255,255,0.06);
+      color: #fff;
+      cursor: pointer;
+      font-size: 0.98rem;
+      transition: 0.2s ease;
+    }
+
+    .nav-btn:hover,
+    .nav-btn.active {
+      background: linear-gradient(135deg, #ff4fb3, #8a52ff);
+      transform: translateY(-1px);
+      box-shadow: 0 8px 24px rgba(138,82,255,0.28);
+    }
+
+    .mini-card,
+    .right-card,
+    .content-card,
+    .voice-card,
+    .chat-card,
+    .video-card {
+      background: rgba(255,255,255,0.07);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 20px;
+      padding: 16px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.18);
+    }
+
+    .mini-card {
+      margin-bottom: 16px;
+    }
+
+    .mini-card h3,
+    .right-card h3,
+    .content-card h3,
+    .voice-card h3,
+    .chat-card h3,
+    .video-card h3 {
+      margin-bottom: 10px;
+      color: #ffb7ea;
+    }
+
+    .mini-card p,
+    .right-card p,
+    .content-card p,
+    .voice-card p,
+    .chat-card p,
+    .video-card p,
+    .small-text {
+      color: #eadcff;
+      line-height: 1.45;
+      font-size: 0.95rem;
+    }
+
+    .content {
+      padding: 24px;
+    }
+
+    .hero {
+      background: linear-gradient(135deg, rgba(255, 79, 179, 0.18), rgba(138, 82, 255, 0.18));
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 26px;
+      padding: 28px;
+      margin-bottom: 20px;
+      box-shadow: 0 18px 40px rgba(0,0,0,0.22);
+    }
+
+    .hero h2 {
+      font-size: 2rem;
+      margin-bottom: 10px;
+      color: #fff;
+    }
+
+    .hero p {
+      color: #eedfff;
+      max-width: 760px;
+      line-height: 1.6;
+    }
+
+    .section { display: none; }
+    .section.active { display: block; }
+
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1.1fr 0.9fr;
+      gap: 18px;
+      margin-top: 18px;
+    }
+
+    .feed-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 18px;
+      margin-top: 18px;
+    }
+
+    .avatar-stage {
+      min-height: 280px;
+      border-radius: 22px;
+      background: radial-gradient(circle at top, rgba(255,120,200,0.3), rgba(60,0,90,0.85));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+      margin-bottom: 16px;
+    }
+
+    .avatar-glow {
+      width: 220px;
+      height: 220px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(255,255,255,0.45), rgba(255,255,255,0.06));
+      position: absolute;
+      filter: blur(8px);
+    }
+
+    .avatar {
+      width: 150px;
+      height: 150px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #ff7bc3, #9256ff);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 4rem;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.24);
+      z-index: 1;
+    }
+
+    .pill-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 12px;
+    }
+
+    .pill {
+      padding: 10px 14px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.08);
+      font-size: 0.92rem;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+      margin-top: 14px;
+    }
+
+    .field {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .field.full { grid-column: 1 / -1; }
+
+    label {
+      color: #ffd7f0;
+      font-size: 0.92rem;
+    }
+
+    input, select, textarea {
+      width: 100%;
+      border: 1px solid rgba(255,255,255,0.12);
+      background: rgba(255,255,255,0.07);
+      color: #fff;
+      border-radius: 14px;
+      padding: 12px 14px;
+      font-size: 0.98rem;
+      outline: none;
+    }
+
+    input::placeholder,
+    textarea::placeholder { color: #d7c0ee; }
+
+    textarea {
+      min-height: 100px;
+      resize: vertical;
+    }
+
+    .btn-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 14px;
+    }
+
+    .btn {
+      border: none;
+      border-radius: 14px;
+      padding: 12px 16px;
+      cursor: pointer;
+      font-weight: 700;
+      color: #fff;
+      background: linear-gradient(135deg, #ff4fb3, #8a52ff);
+      box-shadow: 0 10px 24px rgba(138,82,255,0.25);
+    }
+
+    .btn.secondary {
+      background: rgba(255,255,255,0.08);
+      box-shadow: none;
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .status-box {
+      margin-top: 14px;
+      padding: 12px 14px;
+      border-radius: 14px;
+      background: rgba(255,255,255,0.06);
+      color: #fff;
+      min-height: 48px;
+      line-height: 1.45;
+    }
+
+    .chat-log {
+      margin-top: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      max-height: 300px;
+      overflow-y: auto;
+      padding-right: 4px;
+    }
+
+    .bubble {
+      padding: 12px 14px;
+      border-radius: 16px;
+      line-height: 1.45;
+      max-width: 90%;
+    }
+
+    .bubble.user {
+      align-self: flex-end;
+      background: rgba(138, 82, 255, 0.28);
+    }
+
+    .bubble.ai {
+      align-self: flex-start;
+      background: rgba(255, 79, 179, 0.18);
+    }
+
+    .video-frame {
+      width: 100%;
+      min-height: 360px;
+      border: none;
+      border-radius: 18px;
+      background: #000;
+      margin-top: 12px;
+    }
+
+    .home-banner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+
+    .home-badges {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 12px;
+    }
+
+    .badge {
+      padding: 10px 12px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.08);
+      font-size: 0.92rem;
+    }
+
+    .ad-box {
+      min-height: 130px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      border-radius: 16px;
+      background: linear-gradient(135deg, rgba(255,255,255,0.04), rgba(255,255,255,0.08));
+      border: 1px dashed rgba(255,255,255,0.18);
+      color: #eddcff;
+      margin-top: 12px;
+      padding: 14px;
+    }
+
+    @media (max-width: 1150px) {
+      .app-shell {
+        grid-template-columns: 220px 1fr;
+      }
+
+      .sidebar-right {
+        display: none;
+      }
+    }
+
+    @media (max-width: 860px) {
+      .app-shell {
+        grid-template-columns: 1fr;
+      }
+
+      .sidebar-left,
+      .sidebar-right {
+        position: relative;
+        height: auto;
+      }
+
+      .grid-2,
+      .feed-grid,
+      .form-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
 </head>
 <body>
-  <div class="page-shell">
-
-    <aside class="sidebar left-sidebar">
-      <div class="sidebar-card">
-        <h2>BossesNBaddies</h2>
-        <p>Left sidebar for menu, features, and promotions.</p>
+  <div class="app-shell">
+    <aside class="sidebar-left">
+      <div class="brand">
+        <h1>BossesNBaddies</h1>
+        <p>Velora Live</p>
       </div>
 
-      <div class="sidebar-card">
-        <h3>Quick Links</h3>
-        <button class="side-btn" onclick="goToPage('/')">Home</button>
-        <button class="side-btn" onclick="goToPage('/setup')">AI Setup</button>
-        <button class="side-btn" onclick="showTab('videos')">Videos</button>
-        <button class="side-btn" onclick="showTab('contest')">Contest</button>
-        <button class="side-btn" onclick="showTab('chat')">Chat</button>
+      <div class="nav-title">Navigation</div>
+      <div class="nav-list">
+        <button class="nav-btn active" data-target="home">Home</button>
+        <button class="nav-btn" data-target="ai-boo">AI Boo</button>
+        <button class="nav-btn" data-target="videos">Videos</button>
+        <button class="nav-btn" data-target="profiles">Profiles</button>
+        <button class="nav-btn" data-target="contests">Contests</button>
+        <button class="nav-btn" data-target="messages">Messages</button>
       </div>
 
-      <div class="sidebar-card ad-box">
-        <h3>Ad Space</h3>
-        <p>Your ad can go here.</p>
+      <div class="mini-card">
+        <h3>Velora Status</h3>
+        <p>Your AI Boo tab is now the center experience that can hold the upgraded YouTube voice assistant flow inside the Velora Live layout.</p>
+      </div>
+
+      <div class="mini-card">
+        <h3>Quick Actions</h3>
+        <div class="pill-row">
+          <div class="pill">Voice Search</div>
+          <div class="pill">AI Greeting</div>
+          <div class="pill">YouTube Embed</div>
+          <div class="pill">Sidebar Layout</div>
+        </div>
       </div>
     </aside>
 
-    <main class="main-content">
-      <header class="hero">
-        <h1>BossesNBaddies</h1>
-        <p class="hero-sub">Velora live interface with working tabs, sidebars, and AI setup page.</p>
+    <main class="content">
+      <div class="hero">
+        <div class="home-banner">
+          <div>
+            <h2>Velora Live</h2>
+            <p>A social-style layout with left and right sidebars, and an AI Boo tab that opens your voice assistant experience in the center panel.</p>
+            <div class="home-badges">
+              <div class="badge">AI Boo tab ready</div>
+              <div class="badge">Sidebars kept</div>
+              <div class="badge">YouTube voice base included</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <section id="home" class="section active">
+        <div class="feed-grid">
+          <div class="content-card">
+            <h3>Welcome Back</h3>
+            <p>This is the working Velora Live shell. The center area changes when tabs are clicked, while your sidebars stay in place.</p>
+          </div>
+          <div class="content-card">
+            <h3>AI Boo Plan</h3>
+            <p>Click AI Boo to open the upgraded assistant page. It includes greeting text, voice controls, AI personality options, and YouTube search/play support.</p>
+          </div>
+          <div class="content-card">
+            <h3>Creator Feed</h3>
+            <p>Use this section later for posts, uploads, contests, profile cards, and featured creators.</p>
+          </div>
+          <div class="content-card">
+            <h3>Growth Area</h3>
+            <p>You can later place monetization tools, creator promotions, community announcements, or sign-up prompts here.</p>
+          </div>
+        </div>
+      </section>
+
+      <section id="ai-boo" class="section">
+        <div class="grid-2">
+          <div>
+            <div class="voice-card">
+              <h3>AI Boo</h3>
+              <p>This center panel uses your old YouTube voice assistant idea as the experience users see when they click the AI Boo tab.</p>
+
+              <div class="avatar-stage">
+                <div class="avatar-glow"></div>
+                <div class="avatar" id="avatarFace">V</div>
+              </div>
+
+              <div class="form-grid">
+                <div class="field">
+                  <label for="aiName">AI Name</label>
+                  <input id="aiName" type="text" value="Velora" placeholder="Enter AI name" />
+                </div>
+                <div class="field">
+                  <label for="personality">Personality</label>
+                  <select id="personality">
+                    <option>Flirty</option>
+                    <option>Friendly</option>
+                    <option>Bossy</option>
+                    <option>Calm</option>
+                    <option>Energetic</option>
+                  </select>
+                </div>
+                <div class="field">
+                  <label for="voiceSelect">Voice</label>
+                  <select id="voiceSelect"></select>
+                </div>
+                <div class="field">
+                  <label for="languageSelect">Language</label>
+                  <select id="languageSelect">
+                    <option value="en-US">English (US)</option>
+                    <option value="en-GB">English (UK)</option>
+                    <option value="es-ES">Spanish</option>
+                    <option value="fr-FR">French</option>
+                  </select>
+                </div>
+                <div class="field full">
+                  <label for="customGreeting">Greeting</label>
+                  <textarea id="customGreeting" placeholder="Type what Velora should say when the tab opens">Hi baby, I’m Velora. Tell me what to play or search on YouTube.</textarea>
+                </div>
+              </div>
+
+              <div class="btn-row">
+                <button class="btn" id="greetBtn">Play Greeting</button>
+                <button class="btn secondary" id="listenBtn">Start Listening</button>
+              </div>
+
+              <div class="status-box" id="statusBox">Velora is ready.</div>
+            </div>
+
+            <div class="video-card" style="margin-top: 18px;">
+              <h3>YouTube Search & Play</h3>
+              <p>Say or type something like: play Drake music, search coding tutorial, or open lo-fi beats.</p>
+
+              <div class="form-grid">
+                <div class="field full">
+                  <label for="youtubeQuery">Search / Command</label>
+                  <input id="youtubeQuery" type="text" placeholder="Type a YouTube search or use voice" />
+                </div>
+              </div>
+
+              <div class="btn-row">
+                <button class="btn" id="searchYoutubeBtn">Search YouTube</button>
+                <button class="btn secondary" id="clearYoutubeBtn">Clear</button>
+              </div>
+
+              <iframe id="youtubeFrame" class="video-frame" src="https://www.youtube.com/embed?listType=search&list=Velora%20AI" allowfullscreen></iframe>
+            </div>
+          </div>
+
+          <div>
+            <div class="chat-card">
+              <h3>AI Boo Chat</h3>
+              <p>Right now this is a front-end chat panel. Later you can connect it to your real backend AI.</p>
+
+              <div class="chat-log" id="chatLog">
+                <div class="bubble ai">Hi, I’m Velora. Tell me what you want to watch or search.</div>
+              </div>
+
+              <div class="form-grid">
+                <div class="field full">
+                  <label for="chatInput">Message</label>
+                  <textarea id="chatInput" placeholder="Type to Velora"></textarea>
+                </div>
+              </div>
+
+              <div class="btn-row">
+                <button class="btn" id="sendChatBtn">Send</button>
+                <button class="btn secondary" id="demoReplyBtn">Demo Reply</button>
+              </div>
+            </div>
+
+            <div class="content-card" style="margin-top: 18px;">
+              <h3>What This Tab Does</h3>
+              <p>It keeps your older voice-assistant idea alive but places it inside the Velora Live layout you liked, instead of replacing the whole site.</p>
+              <div class="pill-row">
+                <div class="pill">Main shell stays</div>
+                <div class="pill">AI Boo swaps center</div>
+                <div class="pill">Sidebars remain visible</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="videos" class="section">
+        <div class="content-card">
+          <h3>Videos</h3>
+          <p>This tab is ready for future uploads, shorts, featured creators, and playlists.</p>
+        </div>
+      </section>
+
+      <section id="profiles" class="section">
+        <div class="content-card">
+          <h3>Profiles</h3>
+          <p>This area can later hold profiles, pages, aliases, and creator cards.</p>
+        </div>
+      </section>
+
+      <section id="contests" class="section">
+        <div class="content-card">
+          <h3>Contests</h3>
+          <p>This area can later be used for your separate upload contests and featured entries.</p>
+        </div>
+      </section>
+
+      <section id="messages" class="section">
+        <div class="content-card">
+          <h3>Messages</h3>
+          <p>This tab can later become your messaging and video-chat section.</p>
+        </div>
+      </section>
+    </main>
+
+    <aside class="sidebar-right">
+      <div class="right-card">
+        <h3>Right Sidebar</h3>
+        <p>This stays visible while users click through tabs. You can use it for ads, links, promotions, or featured content.</p>
+        <div class="ad-box">Ad / Promo / YouTube / Sponsor Space</div>
+      </div>
+
+      <div class="right-card" style="margin-top: 16px;">
+        <h3>Featured</h3>
+        <p class="small-text">Put trending creators, announcements, or quick profile highlights here.</p>
+      </div>
+
+      <div class="right-card" style="margin-top: 16px;">
+        <h3>Next Upgrade</h3>
+        <p class="small-text">Connect the AI Boo chat to your backend route and replace the demo reply with real OpenAI responses.</p>
+      </div>
+    </aside>
+  </div>
+
+  <script>
+    const navButtons = document.querySelectorAll('.nav-btn');
+    const sections = document.querySelectorAll('.section');
+    const statusBox = document.getElementById('statusBox');
+    const voiceSelect = document.getElementById('voiceSelect');
+    const languageSelect = document.getElementById('languageSelect');
+    const greetBtn = document.getElementById('greetBtn');
+    const listenBtn = document.getElementById('listenBtn');
+    const aiName = document.getElementById('aiName');
+    const personality = document.getElementById('personality');
+    const customGreeting = document.getElementById('customGreeting');
+    const chatLog = document.getElementById('chatLog');
+    const chatInput = document.getElementById('chatInput');
+    const sendChatBtn = document.getElementById('sendChatBtn');
+    const demoReplyBtn = document.getElementById('demoReplyBtn');
+    const youtubeQuery = document.getElementById('youtubeQuery');
+    const searchYoutubeBtn = document.getElementById('searchYoutubeBtn');
+    const clearYoutubeBtn = document.getElementById('clearYoutubeBtn');
+    const youtubeFrame = document.getElementById('youtubeFrame');
+
+    let availableVoices = [];
+    let recognition = null;
+
+    function showSection(id) {
+      sections.forEach(section => section.classList.remove('active'));
+      navButtons.forEach(btn => btn.classList.remove('active'));
+
+      document.getElementById(id).classList.add('active');
+      document.querySelector(`.nav-btn[data-target="${id}"]`).classList.add('active');
+
+      if (id === 'ai-boo') {
+        statusBox.textContent = `${aiName.value || 'Velora'} is ready in AI Boo.`;
+      }
+    }
+
+    navButtons.forEach(btn => {
+      btn.addEventListener('click', () => showSection(btn.dataset.target));
+    });
+
+    function populateVoices() {
+      availableVoices = speechSynthesis.getVoices();
+      voiceSelect.innerHTML = '';
+
+      if (!availableVoices.length) {
+        const fallback = document.createElement('option');
+        fallback.textContent = 'Default browser voice';
+        fallback.value = '';
+        voiceSelect.appendChild(fallback);
+        return;
+      }
+
+      availableVoices.forEach((voice, index) => {
+        const option = document.createElement('option');
+        option.value = index;
+        option.textContent = `${voice.name} (${voice.lang})`;
+        voiceSelect.appendChild(option);
+      });
+    }
+
+    populateVoices();
+    if (typeof speechSynthesis !== 'undefined') {
+      speechSynthesis.onvoiceschanged = populateVoices;
+    }
+
+    function speakText(text) {
+      if (!('speechSynthesis' in window)) {
+        statusBox.textContent = 'Speech is not supported in this browser.';
+        return;
+      }
+
+      speechSynthesis.cancel();
+      const utterance = new SpeechSynthesisUtterance(text);
+      const voiceIndex = voiceSelect.value;
+
+      if (voiceIndex !== '' && availableVoices[voiceIndex]) {
+        utterance.voice = availableVoices[voiceIndex];
+      }
+
+      utterance.lang = languageSelect.value || 'en-US';
+      speechSynthesis.speak(utterance);
+      statusBox.textContent = text;
+    }
+
+    greetBtn.addEventListener('click', () => {
+      const name = aiName.value.trim() || 'Velora';
+      const mood = personality.value;
+      const greeting = customGreeting.value.trim() || `Hi, I'm ${name}. Tell me what to play on YouTube.`;
+      speakText(`${greeting} My personality is ${mood}.`);
+    });
+
+    function runYoutubeSearch(query) {
+      if (!query.trim()) return;
+      const cleaned = query
+        .replace(/^play\s+/i, '')
+        .replace(/^search\s+/i, '')
+        .replace(/^open\s+/i, '')
+        .trim();
+
+      youtubeFrame.src = `https://www.youtube.com/embed?listType=search&list=${encodeURIComponent(cleaned)}`;
+      statusBox.textContent = `Searching YouTube for: ${cleaned}`;
+      addBubble('user', query);
+      addBubble('ai', `Opening YouTube results for ${cleaned}.`);
+    }
+
+    searchYoutubeBtn.addEventListener('click', () => runYoutubeSearch(youtubeQuery.value));
+
+    clearYoutubeBtn.addEventListener('click', () => {
+      youtubeQuery.value = '';
+      youtubeFrame.src = 'https://www.youtube.com/embed?listType=search&list=Velora%20AI';
+      statusBox.textContent = 'YouTube panel reset.';
+    });
+
+    function addBubble(type, text) {
+      const bubble = document.createElement('div');
+      bubble.className = `bubble ${type}`;
+      bubble.textContent = text;
+      chatLog.appendChild(bubble);
+      chatLog.scrollTop = chatLog.scrollHeight;
+    }
+
+    sendChatBtn.addEventListener('click', () => {
+      const text = chatInput.value.trim();
+      if (!text) return;
+      addBubble('user', text);
+      chatInput.value = '';
+      statusBox.textContent = 'Message added to chat.';
+    });
+
+    demoReplyBtn.addEventListener('click', () => {
+      const name = aiName.value.trim() || 'Velora';
+      addBubble('ai', `${name}: I can help search YouTube, greet users, and later connect to your real AI backend.`);
+    });
+
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+
+    if (SpeechRecognition) {
+      recognition = new SpeechRecognition();
+      recognition.lang = 'en-US';
+      recognition.interimResults = false;
+      recognition.maxAlternatives = 1;
+
+      recognition.onstart = () => {
+        statusBox.textContent = 'Listening...';
+      };
+
+      recognition.onresult = (event) => {
+        const transcript = event.results[0][0].transcript;
+        youtubeQuery.value = transcript;
+        statusBox.textContent = `Heard: ${transcript}`;
+        runYoutubeSearch(transcript);
+      };
+
+      recognition.onerror = (event) => {
+        statusBox.textContent = `Voice error: ${event.error}`;
+      };
+
+      recognition.onend = () => {
+        if (statusBox.textContent === 'Listening...') {
+          statusBox.textContent = 'Voice input stopped.';
+        }
+      };
+
+      listenBtn.addEventListener('click', () => {
+        recognition.lang = languageSelect.value || 'en-US';
+        recognition.start();
+      });
+    } else {
+      listenBtn.disabled = true;
+      listenBtn.textContent = 'Voice Not Supported';
+    }
+  </script>
+</body>
+</html>
       </header>
 
       <nav class="tab-bar">
