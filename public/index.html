@@ -1,40 +1,101 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Velora Live</title>
+  <title>Velora</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial;
+      display: flex;
+      height: 100vh;
+    }
 
-<style>
-*{margin:0;padding:0;box-sizing:border-box;}
+    #left, #right {
+      width: 200px;
+      background: #111;
+      color: white;
+      padding: 10px;
+    }
 
-body{
-  font-family:Arial;
-  background:#0b0911;
-  color:white;
+    #main {
+      flex: 1;
+      background: #1e1e1e;
+      color: white;
+      padding: 20px;
+    }
+
+    .tab {
+      padding: 10px;
+      background: #333;
+      margin-bottom: 5px;
+      cursor: pointer;
+    }
+
+    .tab:hover {
+      background: #555;
+    }
+
+    #chat {
+      height: 300px;
+      overflow-y: auto;
+      background: black;
+      padding: 10px;
+    }
+
+    input {
+      width: 80%;
+      padding: 10px;
+    }
+
+    button {
+      padding: 10px;
+    }
+  </style>
+</head>
+<body>
+
+<div id="left">
+  <h3>MENU</h3>
+  <div class="tab" onclick="showHome()">Home</div>
+  <div class="tab" onclick="showAI()">AI Boo</div>
+</div>
+
+<div id="main">
+  <h1>Velora</h1>
+  <div id="content">
+    Welcome to Velora
+  </div>
+</div>
+
+<div id="right">
+  <h3>ADS</h3>
+</div>
+
+<script>
+function showHome(){
+  document.getElementById("content").innerHTML = "Welcome to Velora";
 }
 
-/* LAYOUT */
-.container{
-  display:flex;
-  height:100vh;
+function showAI(){
+  document.getElementById("content").innerHTML = `
+    <h2>AI Boo</h2>
+    <div id="chat"></div>
+    <input id="input" placeholder="Talk to Velora..." />
+    <button onclick="send()">Send</button>
+  `;
 }
 
-/* LEFT SIDEBAR */
-.sidebar{
-  width:230px;
-  background:#121018;
-  padding:20px;
-}
+function send(){
+  let input = document.getElementById("input").value;
+  let chat = document.getElementById("chat");
 
-.sidebar h2{
-  color:#ff4fa3;
-  margin-bottom:20px;
+  chat.innerHTML += "<div>You: " + input + "</div>";
+  chat.innerHTML += "<div>Velora: Hello, I'm your AI Boo 💋</div>";
 }
+</script>
 
-.sidebar button{
-  width:100%;
-  margin:8px 0;
+</body>
+</html>  margin:8px 0;
   padding:12px;
   border:none;
   background:#1e1a2b;
