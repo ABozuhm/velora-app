@@ -18,23 +18,8 @@ app.get("/health", (req, res) => {
 const PORT = process.env.PORT || 3000;
 
 app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-});  try {
-    const { text, voice } = req.body || {};
-
-    if (!process.env.OPENAI_API_KEY) {
-      return res.status(500).json({
-        error: "Missing OPENAI_API_KEY"
-      });
-    }
-
-    if (!text || typeof text !== "string" || !text.trim()) {
-      return res.status(400).json({
-        error: "Text is required"
-      });
-    }
-
-    const selectedVoice =
+  console.log("Velora running on port " + PORT);
+});    const selectedVoice =
       typeof voice === "string" && voice.trim() ? voice.trim() : "nova";
 
     const response = await fetch("https://api.openai.com/v1/audio/speech", {
