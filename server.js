@@ -1,10 +1,10 @@
-require("dotenv").config();
 const express = require("express");
 const path = require("path");
+require("dotenv").config();
 
 const app = express();
 
-app.use(express.json({ limit: "1mb" }));
+app.use(express.json());
 app.use(express.static(path.join(__dirname, "public")));
 
 app.get("/", (req, res) => {
@@ -15,26 +15,11 @@ app.get("/health", (req, res) => {
   res.status(200).json({ ok: true });
 });
 
-app.get("/api/voices", (req, res) => {
-  res.json({
-    voices: [
-      { id: "alloy", label: "Alloy" },
-      { id: "ash", label: "Ash" },
-      { id: "ballad", label: "Ballad" },
-      { id: "coral", label: "Coral" },
-      { id: "echo", label: "Echo" },
-      { id: "fable", label: "Fable" },
-      { id: "nova", label: "Nova" },
-      { id: "onyx", label: "Onyx" },
-      { id: "sage", label: "Sage" },
-      { id: "shimmer", label: "Shimmer" },
-      { id: "verse", label: "Verse" }
-    ]
-  });
-});
+const PORT = process.env.PORT || 3000;
 
-app.post("/api/voice", async (req, res) => {
-  try {
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
+});  try {
     const { text, voice } = req.body || {};
 
     if (!process.env.OPENAI_API_KEY) {
