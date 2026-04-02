@@ -1,8 +1,16 @@
 const express = require("express");
 const path = require("path");
-require("dotenv").config();
+const dotenv = require("dotenv");
+const OpenAI = require("openai");
+
+dotenv.config();
 
 const app = express();
+const PORT = process.env.PORT || 3000;
+
+const client = new OpenAI({
+  apiKey: process.env.OPENAI_API_KEY
+});
 
 app.use(express.json());
 app.use(express.static(path.join(__dirname, "public")));
@@ -15,26 +23,51 @@ app.get("/health", (req, res) => {
   res.status(200).json({ ok: true });
 });
 
-const PORT = process.env.PORT || 3000;
+app.post("/api/chat", async (req, res) => {
+  try {
+    const userMessage = req.body.message;
+
+    if (!userMessage) {
+      return res.status(400).json({ reply: "No message provided." });
+    }
+
+    if (!process.env.OPENAI_API_KEY) {
+      return res.status(500).json({
+        reply: "Missing OPENAI_API_KEY in .env"
+      });
+    }
+
+    const completion = await client.chat.completions.create({
+      model: "gpt-4.1-mini",
+      messages: [
+        {
+          role: "system",
+          content:
+            "You are Velora, a warm, stylish, confident AI assistant. Keep responses helpful, clear, and conversational."
+        },
+        {
+          role: "user",
+          content: userMessage
+        }
+      ]
+    });
+
+    const reply =
+      completion.choices?.[0]?.message?.content ||
+      "Sorry, I could not generate a reply.";
+
+    res.json({ reply });
+  } catch (error) {
+    console.error("Chat error:", error);
+    res.status(500).json({
+      reply: "Server error talking to AI."
+    });
+  }
+});
 
 app.listen(PORT, () => {
-  console.log("Velora running on port " + PORT);
-});    const selectedVoice =
-      typeof voice === "string" && voice.trim() ? voice.trim() : "nova";
-
-    const response = await fetch("https://api.openai.com/v1/audio/speech", {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${process.env.OPENAI_API_KEY}`,
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({
-        model: "gpt-4o-mini-tts",
-        voice: selectedVoice,
-        input: text,
-        response_format: "mp3"
-      })
-    });
+  console.log(`Server running on port ${PORT}`);
+});    });
 
     if (!response.ok) {
       const errorText = await response.text();
