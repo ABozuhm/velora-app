@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Velora AI Boo</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      overflow-x: hidden;
+      font-family: Arial, sans-serif;
+      color: white;
+      background:
+        radial-gradient(circle at top, rgba(255, 20, 147, 0.24), transparent 30%),
+        radial-gradient(circle at bottom right, rgba(186, 85, 211, 0.14), transparent 24%),
+        linear-gradient(180deg, #120014 0%, #050505 55%, #000000 100%);
+    }
+
+    .topbar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 10;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 16px 20px;
+      background: rgba(0,0,0,0.3);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .topbar h1 {
+      margin: 0;
+      color: #ff69b4;
+      font-size: 24px;
+    }
+
+    .topbar button {
+      border: none;
+      border-radius: 12px;
+      padding: 10px 14px;
+      cursor: pointer;
+      font-weight: 700;
+      background: linear-gradient(90deg, #ff1493, #ff69b4);
+      color: white;
+    }
+
+    .scene {
+      min-height: 100vh;
+      display: grid;
+      grid-template-columns: 1.1fr 0.9fr;
+      align-items: end;
+      padding: 88px 28px 28px;
+      gap: 24px;
+    }
+
+    .avatar-zone {
+      position: relative;
+      min-height: calc(100vh - 120px);
+      display: flex;
+      align-items: end;
+      justify-content: center;
+      overflow: hidden;
+      border-radius: 28px;
+      background:
+        linear-gradient(180deg, rgba(255,255,255,0.05), rgba(255,255,255,0.02)),
+        rgba(0,0,0,0.2);
+      border: 1px solid rgba(255,255,255,0.08);
+      box-shadow: inset 0 0 60px rgba(255,20,147,0.08), 0 20px 40px rgba(0,0,0,0.22);
+    }
+
+    .avatar-glow {
+      position: absolute;
+      bottom: 0;
+      width: 55%;
+      height: 120px;
+      background: radial-gradient(circle, rgba(255, 20, 147, 0.35), transparent 70%);
+      filter: blur(20px);
+      pointer-events: none;
+    }
+
+    .avatar {
+      width: min(500px, 88%);
+      max-height: 88vh;
+      object-fit: contain;
+      filter: drop-shadow(0 0 34px rgba(255, 20, 147, 0.35));
+      animation: entrance 2.3s ease forwards, sway 4.6s ease-in-out infinite 2.3s;
+      opacity: 0;
+      transform: translateY(120px) scale(0.97);
+    }
+
+    @keyframes entrance {
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+
+    @keyframes sway {
+      0% { transform: translateY(0) translateX(0); }
+      50% { transform: translateY(-6px) translateX(4px); }
+      100% { transform: translateY(0) translateX(0); }
+    }
+
+    .control-panel {
+      align-self: center;
+      background: rgba(10, 10, 10, 0.76);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 28px;
+      padding: 24px;
+      box-shadow: 0 20px 44px rgba(0,0,0,0.28);
+      backdrop-filter: blur(10px);
+    }
+
+    .eyebrow {
+      color: #ff9fd3;
+      font-size: 12px;
+      letter-spacing: 2px;
+      margin-bottom: 8px;
+    }
+
+    .control-panel h2 {
+      margin: 0 0 10px;
+      font-size: 34px;
+      line-height: 1.08;
+    }
+
+    .lead {
+      color: rgba(255,255,255,0.82);
+      line-height: 1.5;
+      margin-bottom: 20px;
+    }
+
+    .line {
+      margin-bottom: 14px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 6px;
+      color: rgba(255,255,255,0.9);
+      font-size: 14px;
+    }
+
+    input, select, textarea {
+      width: 100%;
+      padding: 13px 14px;
+      border-radius: 14px;
+      border: 1px solid rgba(255,255,255,0.12);
+      background: rgba(255,255,255,0.08);
+      color: white;
+      outline: none;
+      font-size: 15px;
+    }
+
+    option {
+      color: black;
+    }
+
+    textarea {
+      min-height: 90px;
+      resize: vertical;
+    }
+
+    .btn-row {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 16px;
+    }
+
+    .btn {
+      border: none;
+      border-radius: 14px;
+      padding: 12px 16px;
+      cursor: pointer;
+      font-weight: 700;
+    }
+
+    .btn-primary {
+      background: linear-gradient(90deg, #ff1493, #ff69b4);
+      color: white;
+    }
+
+    .btn-secondary {
+      background: rgba(255,255,255,0.1);
+      color: white;
+    }
+
+    .response-box {
+      margin-top: 16px;
+      min-height: 70px;
+      border-radius: 16px;
+      padding: 14px;
+      background: rgba(255,255,255,0.05);
+      color: #ffd8eb;
+      line-height: 1.5;
+    }
+
+    @media (max-width: 980px) {
+      .scene {
+        grid-template-columns: 1fr;
+      }
+
+      .avatar-zone {
+        min-height: 480px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="topbar">
+    <h1>Velora</h1>
+    <button onclick="window.location.href='index.html'">Back Home</button>
+  </div>
+
+  <div class="scene">
+    <section class="avatar-zone">
+      <div class="avatar-glow"></div>
+      <img src="velora.png" alt="Velora" class="avatar" />
+    </section>
+
+    <section class="control-panel">
+      <div class="eyebrow">AI BOO EXPERIENCE</div>
+      <h2>Meet Velora</h2>
+      <p class="lead" id="introText">
+        Hi... I’m Velora. What’s your name? Help me become the exact assistant you want.
+      </p>
+
+      <div class="line">
+        <label for="username">Your name</label>
+        <input id="username" type="text" placeholder="Enter your name" />
+      </div>
+
+      <div class="line">
+        <label for="personality">Desired personality</label>
+        <select id="personality">
+          <option>Velora - Flirty</option>
+          <option>Velora - Friendly</option>
+          <option>Velora - Confident</option>
+          <option>Brother - Chill</option>
+        </select>
+      </div>
+
+      <div class="line">
+        <label for="language">Language</label>
+        <select id="language">
+          <option>English</option>
+          <option>Spanish</option>
+          <option>French</option>
+        </select>
+      </div>
+
+      <div class="line">
+        <label for="voiceSelect">Voice</label>
+        <select id="voiceSelect"></select>
+      </div>
+
+      <div class="line">
+        <label for="messageInput">Talk to Velora</label>
+        <textarea id="messageInput" placeholder="Type something like: hi, what's your name, help me, or talk to me..."></textarea>
+      </div>
+
+      <div class="btn-row">
+        <button class="btn btn-primary" onclick="startVelora()">Start</button>
+        <button class="btn btn-secondary" onclick="speakIntro()">Hear Intro</button>
+        <button class="btn btn-secondary" onclick="talkToVelora()">Send Message</button>
+      </div>
+
+      <div class="response-box" id="responseBox">Velora is ready.</div>
+    </section>
+  </div>
+
+  <script>
+    const voiceSelect = document.getElementById("voiceSelect");
+    const responseBox = document.getElementById("responseBox");
+    let availableVoices = [];
+
+    function loadVoices() {
+      availableVoices = window.speechSynthesis.getVoices();
+      voiceSelect.innerHTML = "";
+
+      if (!availableVoices.length) {
+        const opt = document.createElement("option");
+        opt.value = "";
+        opt.textContent = "Default voice";
+        voiceSelect.appendChild(opt);
+        return;
+      }
+
+      availableVoices.forEach((voice, index) => {
+        const opt = document.createElement("option");
+        opt.value = index;
+        opt.textContent = `${voice.name} (${voice.lang})`;
+        voiceSelect.appendChild(opt);
+      });
+
+      const englishIndex = availableVoices.findIndex(v => v.lang && v.lang.toLowerCase().startsWith("en"));
+      if (englishIndex >= 0) {
+        voiceSelect.value = englishIndex;
+      }
+    }
+
+    function speak(text) {
+      window.speechSynthesis.cancel();
+      const utter = new SpeechSynthesisUtterance(text);
+      const selected = voiceSelect.value;
+
+      if (selected !== "" && availableVoices[selected]) {
+        utter.voice = availableVoices[selected];
+      }
+
+      utter.rate = 0.97;
+      utter.pitch = 1.06;
+      window.speechSynthesis.speak(utter);
+    }
+
+    function speakIntro() {
+      const text = "Hi... I'm Velora. What's your name? Help me become the exact assistant you want.";
+      responseBox.textContent = text;
+      speak(text);
+    }
+
+    function startVelora() {
+      const username = document.getElementById("username").value.trim() || "beautiful";
+      const personality = document.getElementById("personality").value;
+      const language = document.getElementById("language").value;
+
+      const text = `Nice to meet you, ${username}. You chose ${personality} in ${language}. I'm ready for you.`;
+      responseBox.textContent = text;
+      speak(text);
+    }
+
+    async function talkToVelora() {
+      const username = document.getElementById("username").value.trim() || "beautiful";
+      const personality = document.getElementById("personality").value;
+      const message = document.getElementById("messageInput").value.trim();
+
+      if (!message) {
+        responseBox.textContent = "Type a message first.";
+        return;
+      }
+
+      responseBox.textContent = "Velora is thinking...";
+
+      try {
+        const res = await fetch("/api/chat", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            username,
+            personality,
+            message
+          })
+        });
+
+        const data = await res.json();
+        const reply = data.reply || "I'm here with you.";
+        responseBox.textContent = reply;
+        speak(reply);
+      } catch (err) {
+        responseBox.textContent = "Velora could not respond right now.";
+      }
+    }
+
+    window.speechSynthesis.onvoiceschanged = loadVoices;
+    loadVoices();
+
+    setTimeout(() => {
+      speakIntro();
+    }, 2400);
+  </script>
+</body>
+</html>
