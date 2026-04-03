@@ -1,40 +1,30 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Velora</title>
-  <style>
-    * {
-      box-sizing: border-box;
-    }
+const express = require("express");
+const path = require("path");
+require("dotenv").config();
 
-    body {
-      margin: 0;
-      font-family: Arial, sans-serif;
-      display: flex;
-      min-height: 100vh;
-      background: #141414;
-      color: white;
-    }
+const app = express();
 
-    #left, #right {
-      width: 220px;
-      background: #0d0d0d;
-      padding: 16px;
-    }
+app.use(express.json());
+app.use(express.static(path.join(__dirname, "public")));
 
-    #main {
-      flex: 1;
-      padding: 24px;
-      background: linear-gradient(180deg, #1b1b1b, #111);
-    }
+app.get("/", (req, res) => {
+  res.sendFile(path.join(__dirname, "public", "index.html"));
+});
 
-    h1, h2, h3 {
-      margin-top: 0;
-    }
+app.get("/health", (req, res) => {
+  res.status(200).json({ ok: true });
+});
 
-    .brand {
+app.post("/api/chat", (req, res) => {
+  const message = req.body.message || "";
+  res.json({ reply: `You said: ${message}` });
+});
+
+const PORT = process.env.PORT || 3000;
+
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
+});    .brand {
       font-size: 28px;
       font-weight: bold;
       margin-bottom: 20px;
