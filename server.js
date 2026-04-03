@@ -11,10 +11,6 @@ app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname, "public", "index.html"));
 });
 
-app.get("/health", (req, res) => {
-  res.status(200).json({ ok: true });
-});
-
 app.post("/api/chat", (req, res) => {
   const message = req.body.message || "";
   res.json({ reply: `You said: ${message}` });
@@ -24,17 +20,7 @@ const PORT = process.env.PORT || 3000;
 
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
-});    .brand {
-      font-size: 28px;
-      font-weight: bold;
-      margin-bottom: 20px;
-    }
-
-    .tab {
-      padding: 12px;
-      background: #242424;
-      margin-bottom: 10px;
-      border-radius: 10px;
+});      border-radius: 10px;
       cursor: pointer;
     }
 
