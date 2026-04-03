@@ -1,40 +1,105 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Velora</title>
   <style>
     body {
       margin: 0;
-      font-family: Arial;
+      font-family: Arial, sans-serif;
       display: flex;
       height: 100vh;
+      background: #111;
+      color: white;
     }
 
     #left, #right {
       width: 200px;
-      background: #111;
-      color: white;
-      padding: 10px;
+      background: #0b0b0b;
+      padding: 12px;
     }
 
     #main {
       flex: 1;
-      background: #1e1e1e;
-      color: white;
       padding: 20px;
+      background: #171717;
     }
 
     .tab {
       padding: 10px;
-      background: #333;
-      margin-bottom: 5px;
-      cursor: pointer;
+      background: #222;
+      border-radius: 8px;
+      margin-top: 10px;
+      font-weight: bold;
     }
 
-    .tab:hover {
-      background: #555;
+    #chat {
+      height: 300px;
+      overflow-y: auto;
+      background: #000;
+      padding: 10px;
+      margin-bottom: 10px;
+      border-radius: 8px;
     }
 
+    input {
+      width: 75%;
+      padding: 10px;
+    }
+
+    button {
+      padding: 10px;
+    }
+  </style>
+</head>
+<body>
+  <div id="left">
+    <h3>Velora</h3>
+    <div class="tab">AI Boo</div>
+  </div>
+
+  <div id="main">
+    <h2>AI Boo</h2>
+    <div id="chat">
+      <div>Velora: Hi, I’m your AI Boo.</div>
+    </div>
+    <input id="input" placeholder="Talk to Velora..." />
+    <button onclick="send()">Send</button>
+  </div>
+
+  <div id="right">
+    <h3>ADS</h3>
+  </div>
+
+  <script>
+    async function send() {
+      const input = document.getElementById("input");
+      const chat = document.getElementById("chat");
+      const msg = input.value.trim();
+      if (!msg) return;
+
+      chat.innerHTML += "<div>You: " + msg + "</div>";
+      input.value = "";
+
+      try {
+        const res = await fetch("/api/chat", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ message: msg })
+        });
+
+        const data = await res.json();
+        chat.innerHTML += "<div>Velora: " + data.reply + "</div>";
+      } catch (e) {
+        chat.innerHTML += "<div>Velora: error</div>";
+      }
+
+      chat.scrollTop = chat.scrollHeight;
+    }
+  </script>
+</body>
+</html>
     #chat {
       height: 300px;
       overflow-y: auto;
