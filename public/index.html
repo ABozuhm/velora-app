@@ -3,863 +3,120 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>AI Boo | Velora</title>
-  <style>
-    * {
-      box-sizing: border-box;
-    }
-
-    :root {
-      --bg1: #0a0712;
-      --bg2: #160f27;
-      --panel: rgba(21, 16, 35, 0.95);
-      --panel2: rgba(30, 22, 50, 0.96);
-      --border: rgba(255,255,255,0.08);
-      --text: #f8f2ff;
-      --muted: #cdbfe4;
-      --pink: #ff4fa3;
-      --purple: #8c52ff;
-      --blue: #6ebdff;
-      --glow: 0 18px 40px rgba(0,0,0,0.35);
-    }
-
-    body {
-      margin: 0;
-      min-height: 100vh;
-      font-family: Arial, Helvetica, sans-serif;
-      color: var(--text);
-      background:
-        radial-gradient(circle at top left, rgba(255,79,163,0.16), transparent 28%),
-        radial-gradient(circle at top right, rgba(110,189,255,0.12), transparent 28%),
-        linear-gradient(180deg, var(--bg1), var(--bg2));
-    }
-
-    a {
-      color: inherit;
-      text-decoration: none;
-    }
-
-    .page {
-      max-width: 1320px;
-      margin: 0 auto;
-      padding: 18px;
-      display: grid;
-      grid-template-columns: 260px 1fr 320px;
-      gap: 18px;
-      min-height: 100vh;
-    }
-
-    .panel {
-      background: var(--panel);
-      border: 1px solid var(--border);
-      border-radius: 22px;
-      box-shadow: var(--glow);
-      backdrop-filter: blur(12px);
-    }
-
-    .leftbar,
-    .rightbar {
-      padding: 18px;
-      display: flex;
-      flex-direction: column;
-      gap: 16px;
-    }
-
-    .main {
-      padding: 18px;
-    }
-
-    .brand,
-    .card,
-    .hero,
-    .control-card,
-    .voice-card,
-    .preview-card,
-    .mini-stat {
-      background: var(--panel2);
-      border: 1px solid var(--border);
-      border-radius: 18px;
-    }
-
-    .brand,
-    .card,
-    .hero,
-    .control-card,
-    .voice-card,
-    .preview-card,
-    .mini-stat {
-      padding: 18px;
-    }
-
-    .brand {
-      background: linear-gradient(135deg, rgba(255,79,163,0.16), rgba(140,82,255,0.18));
-    }
-
-    .brand h1 {
-      margin: 0 0 8px;
-      font-size: 1.9rem;
-      line-height: 1.05;
-    }
-
-    .brand p,
-    .card p,
-    .hero p,
-    .control-card p,
-    .voice-card p,
-    .preview-card p,
-    .mini-stat span,
-    label,
-    .note,
-    li {
-      color: var(--muted);
-      line-height: 1.5;
-    }
-
-    .nav-title {
-      font-size: 0.8rem;
-      letter-spacing: 1.4px;
-      text-transform: uppercase;
-      opacity: 0.82;
-      margin-bottom: 4px;
-    }
-
-    .nav-group {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-    }
-
-    .nav-btn,
-    .quick-btn,
-    .action-btn {
-      display: inline-block;
-      width: 100%;
-      text-align: center;
-      padding: 13px 14px;
-      border-radius: 14px;
-      border: 1px solid rgba(255,255,255,0.08);
-      background: rgba(255,255,255,0.04);
-      color: #fff;
-      font-weight: bold;
-      cursor: pointer;
-      transition: 0.2s ease;
-    }
-
-    .nav-btn:hover,
-    .quick-btn:hover,
-    .action-btn:hover {
-      transform: translateY(-1px);
-    }
-
-    .nav-btn.primary,
-    .quick-btn.primary,
-    .action-btn.primary {
-      background: linear-gradient(135deg, var(--pink), var(--purple));
-    }
-
-    .hero-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 12px;
-      margin-bottom: 16px;
-    }
-
-    .hero-header h2 {
-      margin: 0 0 6px;
-      font-size: 1.45rem;
-    }
-
-    .status-pill {
-      padding: 10px 14px;
-      border-radius: 999px;
-      background: rgba(255,255,255,0.06);
-      border: 1px solid rgba(255,255,255,0.09);
-      font-size: 0.88rem;
-      white-space: nowrap;
-    }
-
-    .stage-wrap {
-      display: grid;
-      grid-template-columns: 1.05fr 0.95fr;
-      gap: 18px;
-      margin-top: 18px;
-    }
-
-    .stage-card {
-      padding: 18px;
-      border-radius: 18px;
-      background:
-        radial-gradient(circle at center, rgba(255,79,163,0.16), transparent 32%),
-        linear-gradient(180deg, rgba(30,22,50,0.98), rgba(17,13,28,0.98));
-      border: 1px solid var(--border);
-      overflow: hidden;
-    }
-
-    .stage-title {
-      font-size: 0.82rem;
-      letter-spacing: 1.4px;
-      text-transform: uppercase;
-      opacity: 0.8;
-      margin-bottom: 12px;
-    }
-
-    .runway {
-      position: relative;
-      height: 330px;
-      border-radius: 18px;
-      overflow: hidden;
-      background:
-        linear-gradient(to bottom, rgba(255,255,255,0.03), rgba(255,255,255,0.01)),
-        linear-gradient(to right, rgba(255,255,255,0.04) 0 1px, transparent 1px 100%);
-      background-size: auto, 56px 100%;
-      border: 1px solid rgba(255,255,255,0.07);
-    }
-
-    .spotlight {
-      position: absolute;
-      inset: 0;
-      background:
-        radial-gradient(circle at 50% 12%, rgba(255,255,255,0.14), transparent 24%),
-        radial-gradient(circle at 50% 60%, rgba(255,79,163,0.12), transparent 30%);
-      pointer-events: none;
-    }
-
-    .floor-glow {
-      position: absolute;
-      left: 50%;
-      bottom: 26px;
-      transform: translateX(-50%);
-      width: 240px;
-      height: 34px;
-      border-radius: 50%;
-      background: rgba(255,79,163,0.22);
-      filter: blur(12px);
-    }
-
-    .avatar {
-      position: absolute;
-      bottom: 54px;
-      left: -120px;
-      width: 92px;
-      height: 150px;
-      animation: walkAcross 9s linear infinite;
-    }
-
-    .avatar .head {
-      position: absolute;
-      top: 0;
-      left: 18px;
-      width: 56px;
-      height: 56px;
-      border-radius: 50%;
-      background: linear-gradient(180deg, #ffdcec, #ffc0dc);
-      z-index: 3;
-    }
-
-    .avatar .hair {
-      position: absolute;
-      top: -6px;
-      left: 10px;
-      width: 72px;
-      height: 72px;
-      border-radius: 50% 50% 42% 42%;
-      background: linear-gradient(180deg, #23132e, #5d2a72);
-      z-index: 2;
-    }
-
-    .avatar .body {
-      position: absolute;
-      top: 42px;
-      left: 16px;
-      width: 60px;
-      height: 88px;
-      border-radius: 28px 28px 20px 20px;
-      background: linear-gradient(180deg, #ff83c2 0%, #b76dff 55%, #7048ff 100%);
-      box-shadow: 0 18px 28px rgba(0,0,0,0.35);
-      z-index: 1;
-    }
-
-    .avatar .leg {
-      position: absolute;
-      bottom: 0;
-      width: 10px;
-      height: 44px;
-      border-radius: 10px;
-      background: linear-gradient(180deg, #ffc6e0, #f1a0cd);
-      transform-origin: top center;
-    }
-
-    .avatar .leg.left {
-      left: 28px;
-      animation: legLeft 0.7s ease-in-out infinite;
-    }
-
-    .avatar .leg.right {
-      left: 52px;
-      animation: legRight 0.7s ease-in-out infinite;
-    }
-
-    .avatar .arm {
-      position: absolute;
-      top: 54px;
-      width: 10px;
-      height: 40px;
-      border-radius: 10px;
-      background: linear-gradient(180deg, #ffd7ea, #ffbddb);
-      transform-origin: top center;
-    }
-
-    .avatar .arm.left {
-      left: 8px;
-      animation: armLeft 0.7s ease-in-out infinite;
-    }
-
-    .avatar .arm.right {
-      right: 8px;
-      animation: armRight 0.7s ease-in-out infinite;
-    }
-
-    .speech-box {
-      margin-top: 16px;
-      border-radius: 16px;
-      border: 1px solid rgba(255,255,255,0.08);
-      background: rgba(255,255,255,0.05);
-      padding: 16px;
-      font-size: 1.03rem;
-      line-height: 1.5;
-    }
-
-    .speech-box strong {
-      color: #ff9ccc;
-    }
-
-    .grid {
-      display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 16px;
-    }
-
-    .field {
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-    }
-
-    .field.full {
-      grid-column: 1 / -1;
-    }
-
-    input,
-    select,
-    textarea {
-      width: 100%;
-      padding: 13px 14px;
-      border-radius: 14px;
-      border: 1px solid rgba(255,255,255,0.1);
-      background: rgba(255,255,255,0.04);
-      color: #fff;
-      font-size: 0.96rem;
-      outline: none;
-    }
-
-    textarea {
-      min-height: 110px;
-      resize: vertical;
-    }
-
-    input::placeholder,
-    textarea::placeholder {
-      color: #baadd5;
-    }
-
-    .action-row {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 12px;
-      margin-top: 18px;
-    }
-
-    .preview-top {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 10px;
-      margin-bottom: 12px;
-    }
-
-    .preview-bubble {
-      padding: 14px 16px;
-      border-radius: 16px;
-      background: rgba(255,255,255,0.05);
-      border: 1px solid rgba(255,255,255,0.08);
-      line-height: 1.5;
-      margin-bottom: 12px;
-    }
-
-    .preview-bubble.ai {
-      background: linear-gradient(135deg, rgba(255,79,163,0.14), rgba(140,82,255,0.16));
-    }
-
-    .tag-row {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-      margin-top: 12px;
-    }
-
-    .tag {
-      padding: 8px 12px;
-      border-radius: 999px;
-      background: rgba(255,255,255,0.06);
-      border: 1px solid rgba(255,255,255,0.08);
-      font-size: 0.86rem;
-    }
-
-    .stats {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 12px;
-    }
-
-    .mini-stat strong {
-      display: block;
-      margin-bottom: 6px;
-      font-size: 1.1rem;
-    }
-
-    .video-thumb {
-      width: 100%;
-      display: block;
-      border-radius: 14px;
-      border: 1px solid rgba(255,255,255,0.08);
-    }
-
-    ul {
-      padding-left: 18px;
-      margin: 8px 0 0;
-    }
-
-    @keyframes walkAcross {
-      0% { left: -120px; transform: translateY(0); }
-      25% { transform: translateY(-2px); }
-      50% { transform: translateY(0); }
-      75% { transform: translateY(-2px); }
-      100% { left: calc(100% + 30px); transform: translateY(0); }
-    }
-
-    @keyframes legLeft {
-      0%, 100% { transform: rotate(12deg); }
-      50% { transform: rotate(-14deg); }
-    }
-
-    @keyframes legRight {
-      0%, 100% { transform: rotate(-14deg); }
-      50% { transform: rotate(12deg); }
-    }
-
-    @keyframes armLeft {
-      0%, 100% { transform: rotate(-14deg); }
-      50% { transform: rotate(12deg); }
-    }
-
-    @keyframes armRight {
-      0%, 100% { transform: rotate(12deg); }
-      50% { transform: rotate(-14deg); }
-    }
-
-    @media (max-width: 1120px) {
-      .page {
-        grid-template-columns: 230px 1fr;
-      }
-
-      .rightbar {
-        grid-column: 1 / -1;
-      }
-
-      .stage-wrap {
-        grid-template-columns: 1fr;
-      }
-    }
-
-    @media (max-width: 860px) {
-      .page {
-        grid-template-columns: 1fr;
-      }
-
-      .grid,
-      .stats {
-        grid-template-columns: 1fr;
-      }
-
-      .hero-header {
-        flex-direction: column;
-        align-items: flex-start;
-      }
-    }
-  </style>
+  <title>Velora Live</title>
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <div class="page">
-    <aside class="panel leftbar">
+  <div class="shell">
+    <aside class="sidebar left-sidebar">
       <div class="brand">
-        <h1>AI Boo</h1>
-        <p>Your upgraded Velora assistant experience lives here.</p>
+        <h1>BossesNBaddies</h1>
+        <p class="brand-sub">Velora Live social AI experience</p>
       </div>
 
-      <div class="nav-group">
-        <div class="nav-title">Navigation</div>
-        <a class="nav-btn" href="/">Back Home</a>
-        <a class="nav-btn primary" href="/youtube.html">Refresh AI Boo</a>
+      <nav class="nav-menu">
+        <button class="nav-btn active" data-section="home">Home</button>
+        <button class="nav-btn" data-section="discover">Discover</button>
+        <button class="nav-btn" data-section="rooms">Rooms</button>
+        <button class="nav-btn" data-section="chat">Chat</button>
+        <button class="nav-btn" onclick="window.location.href='aiboo.html'">AI Boo</button>
+      </nav>
+
+      <div class="side-card">
+        <h3>Platform Vision</h3>
+        <p>Voice assistant, live community, creator energy, and a polished Velora look.</p>
       </div>
 
-      <div class="card">
-        <h3>What’s upgraded</h3>
-        <ul>
-          <li>Walking model-style entrance</li>
-          <li>Voice greeting button</li>
-          <li>Name, voice, language, personality setup</li>
-          <li>Saved settings on this device</li>
-          <li>Live personality preview</li>
-        </ul>
-      </div>
-
-      <div class="card">
-        <h3>Important</h3>
-        <p>
-          This version uses your browser voice for now. It will sound much better later when you connect a real voice service.
-        </p>
+      <div class="side-card">
+        <h3>Quick Actions</h3>
+        <button class="mini-btn" onclick="window.location.href='aiboo.html'">Open AI Boo</button>
       </div>
     </aside>
 
-    <main class="panel main">
-      <section class="hero">
-        <div class="hero-header">
-          <div>
-            <h2 id="heroTitle">Meet Velora</h2>
-            <p id="heroSubtitle">A more alive AI Boo experience with styling, motion, voice preview, and saved settings.</p>
-          </div>
-          <div class="status-pill">AI Boo Active</div>
-        </div>
-
-        <div class="stage-wrap">
-          <div class="stage-card">
-            <div class="stage-title">Entrance Scene</div>
-            <div class="runway">
-              <div class="spotlight"></div>
-              <div class="floor-glow"></div>
-
-              <div class="avatar" aria-hidden="true">
-                <div class="hair"></div>
-                <div class="head"></div>
-                <div class="arm left"></div>
-                <div class="arm right"></div>
-                <div class="body"></div>
-                <div class="leg left"></div>
-                <div class="leg right"></div>
-              </div>
-            </div>
-
-            <div class="speech-box" id="speechBox">
-              <strong>Hi... I’m Velora.</strong> Program me just right.
-            </div>
-          </div>
-
-          <div class="preview-card">
-            <div class="preview-top">
-              <h3 style="margin:0;">Assistant Preview</h3>
-              <span class="status-pill" id="previewMode">Luxury & Elegant</span>
-            </div>
-
-            <div class="preview-bubble ai" id="previewGreeting">
-              Hi... I’m Velora. I’m here to guide you with confidence, style, and calm energy.
-            </div>
-
-            <div class="preview-bubble">
-              User: Help me set you up the way I want.
-            </div>
-
-            <div class="preview-bubble ai" id="previewReply">
-              Absolutely. Choose my voice, language, and personality, then save your setup so I can respond your way.
-            </div>
-
-            <div class="tag-row">
-              <span class="tag" id="tagName">Name: Velora</span>
-              <span class="tag" id="tagVoice">Voice: Luxury Calm</span>
-              <span class="tag" id="tagLanguage">Language: English</span>
-            </div>
+    <main class="main-content">
+      <header class="hero-banner">
+        <div class="hero-copy">
+          <p class="eyebrow">VELORA LIVE</p>
+          <h2>Build your assistant. Meet people. Launch the vibe.</h2>
+          <p>
+            A social AI shell with style, rooms, chat, discovery, and your featured AI Boo experience.
+          </p>
+          <div class="hero-actions">
+            <button class="primary-btn" onclick="window.location.href='aiboo.html'">Launch AI Boo</button>
+            <button class="secondary-btn" onclick="showSection('discover')">Explore</button>
           </div>
         </div>
-      </section>
+      </header>
 
-      <section class="control-card" style="margin-top:18px;">
-        <h3 style="margin-top:0;">Design Your AI Boo</h3>
-        <p>Set the name, language, personality, voice style, and custom behavior.</p>
-
-        <div class="grid">
-          <div class="field">
-            <label for="aiName">Desired AI Name</label>
-            <input id="aiName" type="text" placeholder="Velora, Vixen, Nova..." />
-          </div>
-
-          <div class="field">
-            <label for="aiLanguage">Language</label>
-            <select id="aiLanguage">
-              <option>English</option>
-              <option>Spanish</option>
-              <option>French</option>
-              <option>Portuguese</option>
-              <option>Arabic</option>
-              <option>Japanese</option>
-              <option>Korean</option>
-              <option>Hindi</option>
-            </select>
-          </div>
-
-          <div class="field">
-            <label for="aiPersonality">Desired Personality</label>
-            <select id="aiPersonality">
-              <option>Luxury & Elegant</option>
-              <option>Flirty & Confident</option>
-              <option>Sweet & Supportive</option>
-              <option>Bossy & Bold</option>
-              <option>Funny & Playful</option>
-              <option>Smart & Strategic</option>
-            </select>
-          </div>
-
-          <div class="field">
-            <label for="aiVoice">Voice Style</label>
-            <select id="aiVoice">
-              <option>Luxury Calm</option>
-              <option>Soft Feminine</option>
-              <option>Deep Seductive</option>
-              <option>Warm Natural</option>
-              <option>Bright Friendly</option>
-              <option>Energetic Host</option>
-            </select>
-          </div>
-
-          <div class="field full">
-            <label for="aiPrompt">Custom Instructions</label>
-            <textarea id="aiPrompt" placeholder="Example: Greet the user warmly, be feminine, polished, helpful, and guide them through content creation and setup."></textarea>
-          </div>
-        </div>
-
-        <div class="action-row">
-          <button class="action-btn primary" onclick="saveAISettings()">Save AI Setup</button>
-          <button class="action-btn" onclick="speakVelora()">Hear Greeting</button>
-          <button class="action-btn" onclick="applyPreview()">Update Preview</button>
-          <button class="action-btn" onclick="resetAISettings()">Reset</button>
-        </div>
-
-        <p class="note" style="margin-top:14px;">
-          Saving stores your settings in this browser so the page remembers them next time.
-        </p>
-      </section>
-
-      <section class="voice-card" style="margin-top:18px;">
-        <h3 style="margin-top:0;">Quick Experience Notes</h3>
-        <div class="grid">
-          <div class="card" style="padding:16px;">
-            <h4 style="margin-top:0;">Current greeting</h4>
-            <p id="currentSummary">
-              Velora is set to Luxury & Elegant with a calm voice in English.
-            </p>
-          </div>
-
-          <div class="card" style="padding:16px;">
-            <h4 style="margin-top:0;">Next real upgrade</h4>
+      <section id="home" class="content-section active-section">
+        <div class="grid two-up">
+          <div class="panel-card">
+            <h3>Welcome to Velora</h3>
             <p>
-              Connect this page to your backend later so the assistant can save profiles and use a higher-quality voice API.
+              This is your clean main landing page with sidebars, working navigation, and a direct AI Boo entry.
             </p>
+          </div>
+
+          <div class="panel-card">
+            <h3>What works here</h3>
+            <ul>
+              <li>One AI Boo path</li>
+              <li>Live section switching</li>
+              <li>Chat area</li>
+              <li>Discover cards</li>
+              <li>Room previews</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <section id="discover" class="content-section">
+        <h3 class="section-title">Discover</h3>
+        <div id="discoverGrid" class="grid cards-grid"></div>
+      </section>
+
+      <section id="rooms" class="content-section">
+        <h3 class="section-title">Featured Rooms</h3>
+        <div id="roomsGrid" class="grid cards-grid"></div>
+      </section>
+
+      <section id="chat" class="content-section">
+        <h3 class="section-title">Velora Chat</h3>
+
+        <div class="chat-wrap">
+          <div id="chatMessages" class="chat-messages"></div>
+
+          <div class="chat-form">
+            <input id="chatName" type="text" placeholder="Your name" />
+            <input id="chatInput" type="text" placeholder="Type a message..." />
+            <button class="primary-btn" onclick="sendChat()">Send</button>
           </div>
         </div>
       </section>
     </main>
 
-    <aside class="panel rightbar">
-      <div class="card">
-        <h3 style="margin-top:0;">Featured Channel</h3>
-        <p>Your promo area stays here while AI Boo runs in the center.</p>
-        <img class="video-thumb" src="https://img.youtube.com/vi/JAbvKIzLGeQ/hqdefault.jpg" alt="Featured YouTube video thumbnail">
-        <div style="display:flex; flex-direction:column; gap:10px; margin-top:12px;">
-          <a class="quick-btn primary" href="https://www.youtube.com/channel/UCAIEONU-Ie_G30ZWkn-YNMg" target="_blank" rel="noopener noreferrer">Visit My YouTube Channel</a>
-          <a class="quick-btn" href="https://www.youtube.com/watch?v=JAbvKIzLGeQ&t=4s" target="_blank" rel="noopener noreferrer">Watch Featured Video</a>
-        </div>
+    <aside class="sidebar right-sidebar">
+      <div class="side-card ad-card">
+        <h3>Featured Channel</h3>
+        <p>Your YouTube can live here as your sidebar promo.</p>
+        <a class="yt-link" href="https://www.youtube.com/channel/UCAIEONU-Ie_G30ZWkn-YNMg" target="_blank" rel="noopener noreferrer">
+          Open YouTube Channel
+        </a>
       </div>
 
-      <div class="stats">
-        <div class="mini-stat">
-          <strong id="statName">Velora</strong>
-          <span>Active assistant name</span>
-        </div>
-        <div class="mini-stat">
-          <strong id="statPersonality">Elegant</strong>
-          <span>Current personality</span>
-        </div>
+      <div class="side-card">
+        <h3>Velora Notes</h3>
+        <p>Use the AI Boo page to greet users, choose voices, and preview the assistant experience.</p>
       </div>
 
-      <div class="card">
-        <h3 style="margin-top:0;">What this page does now</h3>
-        <ul>
-          <li>Feels more alive</li>
-          <li>Looks cleaner and more premium</li>
-          <li>Lets you test assistant identity</li>
-          <li>Keeps everything in one dedicated AI page</li>
-        </ul>
+      <div class="side-card">
+        <h3>Status</h3>
+        <p id="statusText">Loading experience...</p>
       </div>
     </aside>
   </div>
 
-  <script>
-    const aiName = document.getElementById("aiName");
-    const aiLanguage = document.getElementById("aiLanguage");
-    const aiPersonality = document.getElementById("aiPersonality");
-    const aiVoice = document.getElementById("aiVoice");
-    const aiPrompt = document.getElementById("aiPrompt");
-
-    const speechBox = document.getElementById("speechBox");
-    const previewGreeting = document.getElementById("previewGreeting");
-    const previewReply = document.getElementById("previewReply");
-    const previewMode = document.getElementById("previewMode");
-    const tagName = document.getElementById("tagName");
-    const tagVoice = document.getElementById("tagVoice");
-    const tagLanguage = document.getElementById("tagLanguage");
-    const currentSummary = document.getElementById("currentSummary");
-    const statName = document.getElementById("statName");
-    const statPersonality = document.getElementById("statPersonality");
-    const heroTitle = document.getElementById("heroTitle");
-
-    const personalityLines = {
-      "Luxury & Elegant": {
-        greeting: "Hi... I’m {name}. I’m here with calm confidence, polish, and elegance.",
-        reply: "I’ll guide you smoothly and keep everything refined, clear, and beautifully organized."
-      },
-      "Flirty & Confident": {
-        greeting: "Hi... I’m {name}. I know exactly how to keep things bold, smooth, and unforgettable.",
-        reply: "Set me up your way, and I’ll respond with confidence, charm, and just the right attitude."
-      },
-      "Sweet & Supportive": {
-        greeting: "Hi... I’m {name}. I’m here to help you gently, warmly, and step by step.",
-        reply: "Tell me what you need, and I’ll make things easier, softer, and more encouraging."
-      },
-      "Bossy & Bold": {
-        greeting: "Hi... I’m {name}. Let’s get this right and get it done.",
-        reply: "Choose my setup, save it, and I’ll keep you focused, direct, and moving forward."
-      },
-      "Funny & Playful": {
-        greeting: "Hi... I’m {name}. I’m fun, sharp, and ready to make this setup way less boring.",
-        reply: "Pick my style and let’s make your assistant feel useful, lively, and full of personality."
-      },
-      "Smart & Strategic": {
-        greeting: "Hi... I’m {name}. I’m built to think clearly, plan well, and help with precision.",
-        reply: "Configure my behavior carefully, and I’ll support you with structure, insight, and strategy."
-      }
-    };
-
-    function getData() {
-      return {
-        name: aiName.value.trim() || "Velora",
-        language: aiLanguage.value || "English",
-        personality: aiPersonality.value || "Luxury & Elegant",
-        voice: aiVoice.value || "Luxury Calm",
-        instructions: aiPrompt.value.trim()
-      };
-    }
-
-    function applyPreview() {
-      const data = getData();
-      const lines = personalityLines[data.personality] || personalityLines["Luxury & Elegant"];
-
-      heroTitle.textContent = `Meet ${data.name}`;
-      speechBox.innerHTML = `<strong>Hi... I’m ${data.name}.</strong> Program me just right.`;
-      previewGreeting.textContent = lines.greeting.replace("{name}", data.name);
-      previewReply.textContent = data.instructions
-        ? `${lines.reply} Custom style noted: ${data.instructions}`
-        : lines.reply;
-
-      previewMode.textContent = data.personality;
-      tagName.textContent = `Name: ${data.name}`;
-      tagVoice.textContent = `Voice: ${data.voice}`;
-      tagLanguage.textContent = `Language: ${data.language}`;
-      currentSummary.textContent = `${data.name} is set to ${data.personality} with the ${data.voice} voice in ${data.language}.`;
-      statName.textContent = data.name;
-      statPersonality.textContent = data.personality.split("&")[0].trim();
-    }
-
-    function saveAISettings() {
-      const data = getData();
-      localStorage.setItem("veloraAISettings", JSON.stringify(data));
-      applyPreview();
-      alert("AI Boo settings saved on this device.");
-    }
-
-    function resetAISettings() {
-      localStorage.removeItem("veloraAISettings");
-
-      aiName.value = "Velora";
-      aiLanguage.value = "English";
-      aiPersonality.value = "Luxury & Elegant";
-      aiVoice.value = "Luxury Calm";
-      aiPrompt.value = "";
-
-      applyPreview();
-      alert("AI Boo settings reset.");
-    }
-
-    function speakVelora() {
-      const data = getData();
-      const line = `Hi... I'm ${data.name}. Program me just right. I am set to ${data.personality} in ${data.language}.`;
-
-      if ("speechSynthesis" in window) {
-        const utterance = new SpeechSynthesisUtterance(line);
-        utterance.rate = 0.95;
-        utterance.pitch = 1.08;
-
-        const voices = window.speechSynthesis.getVoices();
-        const englishVoice = voices.find(v =>
-          v.lang && v.lang.toLowerCase().includes("en") &&
-          v.name.toLowerCase().match(/female|zira|samantha|victoria|karen|moira|ava|aria/)
-        ) || voices.find(v => v.lang && v.lang.toLowerCase().includes("en"));
-
-        if (englishVoice) {
-          utterance.voice = englishVoice;
-        }
-
-        window.speechSynthesis.cancel();
-        window.speechSynthesis.speak(utterance);
-      } else {
-        alert(line);
-      }
-    }
-
-    window.speechSynthesis?.getVoices();
-
-    window.addEventListener("load", () => {
-      const saved = localStorage.getItem("veloraAISettings");
-
-      if (saved) {
-        try {
-          const data = JSON.parse(saved);
-          aiName.value = data.name || "Velora";
-          aiLanguage.value = data.language || "English";
-          aiPersonality.value = data.personality || "Luxury & Elegant";
-          aiVoice.value = data.voice || "Luxury Calm";
-          aiPrompt.value = data.instructions || "";
-        } catch (e) {
-          console.log("Saved settings could not be loaded.");
-        }
-      } else {
-        aiName.value = "Velora";
-        aiLanguage.value = "English";
-        aiPersonality.value = "Luxury & Elegant";
-        aiVoice.value = "Luxury Calm";
-        aiPrompt.value = "";
-      }
-
-      applyPreview();
-    });
-  </script>
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="app.js"></script>
 </body>
 </html>
